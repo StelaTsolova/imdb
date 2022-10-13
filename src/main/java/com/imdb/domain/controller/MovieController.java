@@ -41,7 +41,6 @@ public class MovieController {
     public ResponseEntity<?> createMovie(@RequestBody @Valid MovieChangeDto movieChangeDto,
                                          BindingResult bindingResult, UriComponentsBuilder builder) {
         if (bindingResult.hasErrors()) {
-            System.out.println("binding");
             return ResponseEntity.badRequest().body(UtilClass.getErrorMessages(bindingResult.getAllErrors()));
         }
 

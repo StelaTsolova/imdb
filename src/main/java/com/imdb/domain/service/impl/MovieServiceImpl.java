@@ -1,15 +1,12 @@
 package com.imdb.domain.service.impl;
 
-import com.example.imdb.model.dto.*;
 import com.imdb.domain.model.dto.*;
 import com.imdb.domain.model.entity.Actor;
 import com.imdb.domain.model.entity.Movie;
 import com.imdb.domain.model.mapping.MovieMapper;
 import com.imdb.domain.repository.MovieRepository;
-import com.example.imdb.service.*;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
 import com.imdb.domain.service.*;
-import com.imdb.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -131,7 +128,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public double updateRating(Long movieId, RatingDto ratingDto) {
-        log.info("Movie with id {} updated its rating");
+        log.info("Movie with id {} updated its rating", movieId);
 
         return ratingService.updateRating(getMovieById(movieId), ratingDto.getScour());
     }

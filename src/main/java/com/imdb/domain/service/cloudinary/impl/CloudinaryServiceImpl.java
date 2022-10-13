@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.imdb.domain.service.cloudinary.CloudinaryImage;
 import com.imdb.domain.service.cloudinary.CloudinaryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CloudinaryServiceImpl implements CloudinaryService {
 
     private static final String FOLDER_NAME = "imdb";
@@ -37,7 +39,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
             return new CloudinaryImage(url, publicId);
         } catch (IOException exception) {
-            System.out.println("upload -> " + exception.getMessage());
+            log.info("CloudinaryImage upload method throw IOException with message {}", exception.getMessage());
             return null;
         } finally {
             tempFile.delete();
