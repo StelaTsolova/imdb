@@ -1,4 +1,4 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.entity.Genre;
 import com.imdb.domain.repository.GenreRepository;
@@ -38,7 +38,7 @@ class GenreServiceImplTest {
                 .thenReturn(Optional.empty());
         Mockito.when(genreRepositoryMock.save(Mockito.any())).thenReturn(genreTest);
 
-        Genre genre = genreServiceTest.getGenre("");
+        final Genre genre = genreServiceTest.getGenre("");
 
         Assertions.assertEquals(genre.getName(), genreTest.getName());
     }
@@ -48,7 +48,7 @@ class GenreServiceImplTest {
         Mockito.when(genreRepositoryMock.findByName(Mockito.any()))
                 .thenReturn(Optional.of(genreTest));
 
-        Genre genre = genreServiceTest.getGenre("");
+        final Genre genre = genreServiceTest.getGenre("");
 
         Assertions.assertEquals(genre.getName(), genreTest.getName());
     }

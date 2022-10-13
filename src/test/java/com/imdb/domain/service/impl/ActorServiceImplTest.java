@@ -1,4 +1,4 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.dto.ActorDto;
 import com.imdb.domain.model.entity.Actor;
@@ -6,7 +6,6 @@ import com.imdb.domain.model.entity.Movie;
 import com.imdb.domain.model.mapping.ActorMapper;
 import com.imdb.domain.repository.ActorRepository;
 import com.imdb.domain.service.ActorService;
-import com.imdb.domain.service.impl.ActorServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,7 @@ class ActorServiceImplTest {
                 .thenReturn(Optional.empty());
         Mockito.when(actorRepositoryMock.save(Mockito.any())).thenReturn(actorTest);
 
-        Actor actor = actorServiceTest.getActor(new ActorDto());
+        final Actor actor = actorServiceTest.getActor(new ActorDto());
 
         Assertions.assertEquals(actor.getFirstName(), actorTest.getFirstName());
         Assertions.assertEquals(actor.getLastName(), actorTest.getLastName());
@@ -63,7 +62,7 @@ class ActorServiceImplTest {
         Mockito.when(actorRepositoryMock.findByFirstNameAndLastName(Mockito.any(), Mockito.any()))
                 .thenReturn(Optional.of(actorTest));
 
-        Actor actor = actorServiceTest.getActor(new ActorDto());
+        final Actor actor = actorServiceTest.getActor(new ActorDto());
 
         Assertions.assertEquals(actor.getFirstName(), actorTest.getFirstName());
         Assertions.assertEquals(actor.getLastName(), actorTest.getLastName());

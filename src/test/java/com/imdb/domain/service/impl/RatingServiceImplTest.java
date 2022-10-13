@@ -1,4 +1,4 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.dto.RatingChangeDto;
 import com.imdb.domain.model.entity.Rating;
@@ -40,7 +40,7 @@ class RatingServiceImplTest {
     public void updateRating() {
         Mockito.when(ratingRepositoryMock.findByMovie(Mockito.any())).thenReturn(Optional.of(ratingTest));
 
-        double averageScore = ratingServiceTest.updateRating(Mockito.any(), RATING_SCORES);
+        final double averageScore = ratingServiceTest.updateRating(Mockito.any(), RATING_SCORES);
 
         Assertions.assertEquals(averageScore, RATING_SCORES);
     }
@@ -55,7 +55,7 @@ class RatingServiceImplTest {
 
     @Test
     public void createRating() {
-        RatingChangeDto ratingChangeDto = new RatingChangeDto();
+        final RatingChangeDto ratingChangeDto = new RatingChangeDto();
         ratingChangeDto.setCountScours(RATING_COUNT_SCORES);
         ratingChangeDto.setScours(RATING_SCORES);
 
@@ -63,7 +63,7 @@ class RatingServiceImplTest {
         ratingTest.setScours(RATING_SCORES);
         Mockito.when(ratingRepositoryMock.save(Mockito.any())).thenReturn(ratingTest);
 
-        Rating rating = ratingServiceTest.createRating(ratingChangeDto, null);
+        final Rating rating = ratingServiceTest.createRating(ratingChangeDto, null);
 
         Assertions.assertEquals(rating.getCountScours(), ratingTest.getCountScours());
         Assertions.assertEquals(rating.getScours(), rating.getScours());

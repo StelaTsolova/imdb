@@ -1,4 +1,4 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.dto.RoleChangeDto;
 import com.imdb.domain.model.dto.UserEntityRegisterDto;
@@ -46,7 +46,7 @@ class UserEntityServiceImplTest {
 
     @Test
     public void registerUser() {
-        UserEntityRegisterDto userEntityRegisterDto = new UserEntityRegisterDto();
+        final UserEntityRegisterDto userEntityRegisterDto = new UserEntityRegisterDto();
         userEntityRegisterDto.setPassword(USER_ENTITY_PASSWORD);
 
         Mockito.when(userEntityMapper.mapUserEntityRegisterDtoToUserEntity(userEntityRegisterDto))
@@ -76,7 +76,7 @@ class UserEntityServiceImplTest {
 
     @Test
     public void changeUserRole() {
-        RoleChangeDto roleChangeDto = new RoleChangeDto();
+        final RoleChangeDto roleChangeDto = new RoleChangeDto();
         roleChangeDto.setUserEmail(USER_ENTITY_EMAIL);
         roleChangeDto.setRole("usEr");
 
@@ -95,7 +95,7 @@ class UserEntityServiceImplTest {
         Mockito.when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
                 .thenReturn(Optional.of(userEntityTest));
 
-        UserEntity userEntity = userEntityServiceTest.getUserEntityByEmail(USER_ENTITY_EMAIL);
+        final UserEntity userEntity = userEntityServiceTest.getUserEntityByEmail(USER_ENTITY_EMAIL);
 
         Assertions.assertEquals(userEntity.getEmail(), userEntityTest.getEmail());
     }

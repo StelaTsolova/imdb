@@ -1,4 +1,4 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.entity.UserEntity;
 import com.imdb.domain.model.enums.Role;
@@ -33,7 +33,7 @@ class UserDetailsServiceImplTest {
 
     @Test
     public void loadUserByUsername() {
-        UserEntity userEntity = new UserEntity();
+        final UserEntity userEntity = new UserEntity();
         userEntity.setEmail(USER_DETAILS_EMAIL);
         userEntity.setPassword(USER_DETAILS_PASSWORD);
         userEntity.setRole(Role.USER);
@@ -41,7 +41,7 @@ class UserDetailsServiceImplTest {
         Mockito.when(userEntityRepositoryMock.findByEmail(USER_DETAILS_EMAIL))
                 .thenReturn(Optional.of(userEntity));
 
-        UserDetails userDetails = userDetailsServiceTest.loadUserByUsername(USER_DETAILS_EMAIL);
+        final UserDetails userDetails = userDetailsServiceTest.loadUserByUsername(USER_DETAILS_EMAIL);
 
         Assertions.assertEquals(userDetails.getUsername(), userEntity.getEmail());
         Assertions.assertEquals(userDetails.getPassword(), userEntity.getPassword());

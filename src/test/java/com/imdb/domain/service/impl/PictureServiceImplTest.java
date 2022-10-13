@@ -1,4 +1,4 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.entity.Picture;
 import com.imdb.domain.repository.PictureRepository;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -32,8 +31,6 @@ class PictureServiceImplTest {
     private PictureRepository pictureRepositoryMock;
     @Mock
     private CloudinaryService cloudinaryServiceMock;
-    @Mock
-    private MultipartFile multipartFileMock;
 
     @BeforeEach
     void init(){
@@ -49,7 +46,7 @@ class PictureServiceImplTest {
         Mockito.when(cloudinaryServiceMock.upload(Mockito.any())).thenReturn(new CloudinaryImage(PICTURE_URL, PICTURE_PUBLIC_ID));
         Mockito.when(pictureRepositoryMock.save(Mockito.any())).thenReturn(pictureTest);
 
-        Picture picture = pictureServiceTest.savePicture(null, null);
+        final Picture picture = pictureServiceTest.savePicture(null, null);
 
         Assertions.assertEquals(picture.getUrl(), pictureTest.getUrl());
         Assertions.assertEquals(picture.getPublicId(), pictureTest.getPublicId());

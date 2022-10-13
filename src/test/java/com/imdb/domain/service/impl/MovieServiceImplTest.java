@@ -1,15 +1,11 @@
-package com.imdb.domain.impl;
+package com.imdb.domain.service.impl;
 
-import com.example.imdb.model.dto.*;
-import com.example.imdb.model.entity.*;
 import com.imdb.domain.model.dto.*;
 import com.imdb.domain.model.entity.*;
 import com.imdb.domain.model.mapping.MovieMapper;
 import com.imdb.domain.repository.MovieRepository;
-import com.example.imdb.service.*;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
 import com.imdb.domain.service.*;
-import com.imdb.domain.service.impl.MovieServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.imdb.domain.impl.ActorServiceImplTest.ACTOR_FIRST_NAME;
-import static com.imdb.domain.impl.RatingServiceImplTest.RATING_COUNT_SCORES;
-import static com.imdb.domain.impl.RatingServiceImplTest.RATING_SCORES;
+import static com.imdb.domain.service.impl.ActorServiceImplTest.ACTOR_FIRST_NAME;
+import static com.imdb.domain.service.impl.RatingServiceImplTest.RATING_COUNT_SCORES;
+import static com.imdb.domain.service.impl.RatingServiceImplTest.RATING_SCORES;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
@@ -77,21 +73,21 @@ class MovieServiceImplTest {
 
     @Test
     public void getAllMovies() {
-        Pageable pageable = PageRequest.of(2, 2, Sort.by("id"));
+        final Pageable pageable = PageRequest.of(2, 2, Sort.by("id"));
 
         Mockito.when(movieRepositoryMock.findAll(pageable))
                 .thenReturn(new PageImpl<>(List.of(movieTest)));
         Mockito.when(movieMapperMock.mapMovieToMovieDto(movieTest))
                 .thenReturn(movieDtoTest);
 
-        Page<MovieDto> pageMovieDto = movieServiceTest.getAllMovies(2, 2, "id");
+        final Page<MovieDto> pageMovieDto = movieServiceTest.getAllMovies(2, 2, "id");
 
         Assertions.assertEquals(pageMovieDto.getSize(), 1);
     }
 
     @Test
     public void createMovieWhenMovieChangeDtoHaveGenre() {
-        Genre genre = new Genre();
+        final Genre genre = new Genre();
         genre.setName(GenreServiceImplTest.GENRE_NAME);
 
         movieChangeDtoTest.setGenre(GenreServiceImplTest.GENRE_NAME);
@@ -109,7 +105,7 @@ class MovieServiceImplTest {
 
     @Test
     public void updateMovieWhenMovieHaveNotActors() {
-        Actor actor = new Actor();
+        final Actor actor = new Actor();
         actor.setFirstName(ACTOR_FIRST_NAME);
 
         movieChangeDtoTest.setActors(List.of(new ActorDto()));
@@ -128,12 +124,12 @@ class MovieServiceImplTest {
 
     @Test
     public void updateMovieWhenMovieHaveActors() {
-        Actor actor = new Actor();
+        final Actor actor = new Actor();
         actor.setFirstName(ACTOR_FIRST_NAME);
         movieTest.setActors(new ArrayList<>());
         movieTest.getActors().add(actor);
 
-        Actor newActor = new Actor();
+        final Actor newActor = new Actor();
         newActor.setFirstName("NewName");
         movieChangeDtoTest.setActors(List.of(new ActorDto()));
 
@@ -151,7 +147,7 @@ class MovieServiceImplTest {
 
     @Test
     public void updateMovieWhenMovieHaveNotRating() {
-        Rating rating = new Rating();
+        final Rating rating = new Rating();
         rating.setCountScours(RATING_COUNT_SCORES);
         rating.setScours(RATING_SCORES);
 
@@ -172,12 +168,12 @@ class MovieServiceImplTest {
 
     @Test
     public void updateMovieWhenMovieHaveRating() {
-        Rating rating = new Rating();
+        final Rating rating = new Rating();
         rating.setCountScours(RATING_COUNT_SCORES);
         rating.setScours(RATING_SCORES);
         movieTest.setRating(rating);
 
-        Rating newRating = new Rating();
+        final Rating newRating = new Rating();
         newRating.setCountScours(RATING_COUNT_SCORES + 1);
         newRating.setScours(RATING_SCORES + 3);
         movieChangeDtoTest.setRating(new RatingChangeDto());
@@ -198,7 +194,7 @@ class MovieServiceImplTest {
 
     @Test
     public void updateMovieWhenMovieHaveRatingAndRatingChangeDtoIsNull() {
-        Rating rating = new Rating();
+        final Rating rating = new Rating();
         rating.setCountScours(RATING_COUNT_SCORES);
         rating.setScours(RATING_SCORES);
         movieTest.setRating(rating);
@@ -219,7 +215,7 @@ class MovieServiceImplTest {
     public void getMovieByIdShouldReturnMovieWhenIdExist() {
         Mockito.when(movieRepositoryMock.findById(Mockito.any())).thenReturn(Optional.of(movieTest));
 
-        Movie movie = movieServiceTest.getMovieById(ID);
+        final Movie movie = movieServiceTest.getMovieById(ID);
 
         Assertions.assertEquals(movie.getName(), movieTest.getName());
     }
@@ -243,11 +239,11 @@ class MovieServiceImplTest {
 
     @Test
     public void getMoviesByUserEmailShouldReturnListOfMovieDtoWhenUserWithEmailExist() {
-        List<Movie> movies = List.of(movieTest);
+        final List<Movie> movies = List.of(movieTest);
         Mockito.when(movieRepositoryMock.findByOwner_Email(EMAIL)).thenReturn(Optional.of(movies));
         Mockito.when(movieMapperMock.mapMovieToMovieDto(movieTest)).thenReturn(movieDtoTest);
 
-        List<MovieDto> movieDtos = movieServiceTest.getMoviesByUserEmail(EMAIL);
+        final List<MovieDto> movieDtos = movieServiceTest.getMoviesByUserEmail(EMAIL);
 
         Assertions.assertEquals(movies.get(0).getName(), movieDtos.get(0).getName());
     }
