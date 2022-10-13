@@ -1,4 +1,4 @@
-package com.imdb.service.impl;
+package com.imdb.domain.impl;
 
 import com.example.imdb.model.dto.*;
 import com.example.imdb.model.entity.*;
@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.imdb.service.impl.ActorServiceImplTest.ACTOR_FIRST_NAME;
-import static com.imdb.service.impl.RatingServiceImplTest.RATING_COUNT_SCORES;
-import static com.imdb.service.impl.RatingServiceImplTest.RATING_SCORES;
+import static com.imdb.domain.impl.ActorServiceImplTest.ACTOR_FIRST_NAME;
+import static com.imdb.domain.impl.RatingServiceImplTest.RATING_COUNT_SCORES;
+import static com.imdb.domain.impl.RatingServiceImplTest.RATING_SCORES;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
@@ -104,7 +104,7 @@ class MovieServiceImplTest {
 
         movieServiceTest.createMovie(movieChangeDtoTest);
 
-        Assertions.assertEquals(movieTest.getGenre().getName(), GenreServiceImplTest.GENRE_NAME);
+        assertEquals(movieTest.getGenre().getName(), GenreServiceImplTest.GENRE_NAME);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.imdb.service.impl;
+package com.imdb.domain.impl;
 
 import com.imdb.domain.model.entity.Picture;
 import com.imdb.domain.repository.PictureRepository;
