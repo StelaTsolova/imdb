@@ -2,7 +2,7 @@ package com.imdb.config;
 
 import com.imdb.config.filter.CustomAuthenticationFilter;
 import com.imdb.config.filter.CustomAuthorizationFilter;
-import com.imdb.model.enums.Role;
+import com.imdb.domain.model.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

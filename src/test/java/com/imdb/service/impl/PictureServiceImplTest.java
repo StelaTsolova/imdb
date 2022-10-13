@@ -1,11 +1,12 @@
 package com.imdb.service.impl;
 
-import com.imdb.model.entity.Picture;
-import com.imdb.repository.PictureRepository;
-import com.imdb.service.PictureService;
-import com.imdb.service.cloudinary.CloudinaryImage;
-import com.imdb.service.cloudinary.CloudinaryService;
-import com.imdb.web.exception.ObjectNotFoundException;
+import com.imdb.domain.model.entity.Picture;
+import com.imdb.domain.repository.PictureRepository;
+import com.imdb.domain.service.PictureService;
+import com.imdb.domain.service.cloudinary.CloudinaryImage;
+import com.imdb.domain.service.cloudinary.CloudinaryService;
+import com.imdb.domain.controller.exception.ObjectNotFoundException;
+import com.imdb.domain.service.impl.PictureServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

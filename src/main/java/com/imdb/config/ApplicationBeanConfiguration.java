@@ -1,8 +1,8 @@
 package com.imdb.config;
 
 import com.cloudinary.Cloudinary;
-import com.imdb.repository.UserEntityRepository;
-import com.imdb.service.impl.UserDetailsServiceImpl;
+import com.imdb.domain.repository.UserEntityRepository;
+import com.imdb.domain.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

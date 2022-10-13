@@ -1,10 +1,11 @@
 package com.imdb.service.impl;
 
-import com.imdb.model.dto.RatingChangeDto;
-import com.imdb.model.entity.Rating;
-import com.imdb.repository.RatingRepository;
-import com.imdb.service.RatingService;
-import com.imdb.web.exception.ObjectNotFoundException;
+import com.imdb.domain.model.dto.RatingChangeDto;
+import com.imdb.domain.model.entity.Rating;
+import com.imdb.domain.repository.RatingRepository;
+import com.imdb.domain.service.RatingService;
+import com.imdb.domain.controller.exception.ObjectNotFoundException;
+import com.imdb.domain.service.impl.RatingServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,9 @@
 package com.imdb.service.impl;
 
-import com.imdb.model.entity.UserEntity;
-import com.imdb.model.enums.Role;
-import com.imdb.repository.UserEntityRepository;
+import com.imdb.domain.model.entity.UserEntity;
+import com.imdb.domain.model.enums.Role;
+import com.imdb.domain.repository.UserEntityRepository;
+import com.imdb.domain.service.impl.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

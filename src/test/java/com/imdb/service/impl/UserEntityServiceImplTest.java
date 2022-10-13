@@ -1,13 +1,14 @@
 package com.imdb.service.impl;
 
-import com.imdb.model.dto.RoleChangeDto;
-import com.imdb.model.dto.UserEntityRegisterDto;
-import com.imdb.model.entity.UserEntity;
-import com.imdb.model.enums.Role;
-import com.imdb.model.mapping.UserEntityMapper;
-import com.imdb.repository.UserEntityRepository;
-import com.imdb.service.UserEntityService;
-import com.imdb.web.exception.ObjectNotFoundException;
+import com.imdb.domain.model.dto.RoleChangeDto;
+import com.imdb.domain.model.dto.UserEntityRegisterDto;
+import com.imdb.domain.model.entity.UserEntity;
+import com.imdb.domain.model.enums.Role;
+import com.imdb.domain.model.mapping.UserEntityMapper;
+import com.imdb.domain.repository.UserEntityRepository;
+import com.imdb.domain.service.UserEntityService;
+import com.imdb.domain.controller.exception.ObjectNotFoundException;
+import com.imdb.domain.service.impl.UserEntityServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

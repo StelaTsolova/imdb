@@ -1,11 +1,12 @@
 package com.imdb.service.impl;
 
-import com.imdb.model.dto.ActorDto;
-import com.imdb.model.entity.Actor;
-import com.imdb.model.entity.Movie;
-import com.imdb.model.mapping.ActorMapper;
-import com.imdb.repository.ActorRepository;
-import com.imdb.service.ActorService;
+import com.imdb.domain.model.dto.ActorDto;
+import com.imdb.domain.model.entity.Actor;
+import com.imdb.domain.model.entity.Movie;
+import com.imdb.domain.model.mapping.ActorMapper;
+import com.imdb.domain.repository.ActorRepository;
+import com.imdb.domain.service.ActorService;
+import com.imdb.domain.service.impl.ActorServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
