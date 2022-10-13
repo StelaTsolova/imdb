@@ -38,8 +38,8 @@ public class UserEntityController {
     private final UserEntityService userEntityService;
 
     @PostMapping(UtilClass.PATH_REGISTER)
-    public ResponseEntity<?> register(@RequestBody @Valid UserEntityRegisterDto userEntityRegisterDto,
-                                      BindingResult bindingResult) {
+    public ResponseEntity<?> register(@RequestBody @Valid final UserEntityRegisterDto userEntityRegisterDto,
+                                      final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(UtilClass.getErrorMessages(bindingResult.getAllErrors()));
         }
@@ -51,7 +51,8 @@ public class UserEntityController {
 
     @PostMapping(UtilClass.PATH_CONTROL)
     @PreAuthorize(value = "ADMIN")
-    public ResponseEntity<?> changeRole(@RequestBody RoleChangeDto roleChangeDto, BindingResult bindingResult) {
+    public ResponseEntity<?> changeRole(@RequestBody final RoleChangeDto roleChangeDto,
+                                        final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(UtilClass.getErrorMessages(bindingResult.getAllErrors()));
         }
@@ -62,25 +63,25 @@ public class UserEntityController {
     }
 
     @GetMapping(UtilClass.PATH_TOKEN_REFRESH)
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
+    public void refreshToken(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+        final String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
-                String refreshToken = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
+                final String refreshToken = authorizationHeader.substring("Bearer ".length());
+                final Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
+                final JWTVerifier verifier = JWT.require(algorithm).build();
+                final DecodedJWT decodedJWT = verifier.verify(refreshToken);
 
-                String email = decodedJWT.getSubject();
+                final String email = decodedJWT.getSubject();
 
-                UserEntity user = userEntityService.getUserEntityByEmail(email);
-                List<String> roles = List.of(user.getRole().name());
-                Date expiresAt = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+                final UserEntity user = userEntityService.getUserEntityByEmail(email);
+                final List<String> roles = List.of(user.getRole().name());
+                final Date expiresAt = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 
-                String accessToken = UtilClass.buildAccessToken(user.getEmail(), expiresAt,
+                final String accessToken = UtilClass.buildAccessToken(user.getEmail(), expiresAt,
                         request.getRequestURL().toString(), "roles", roles, algorithm);
 
-                Map<String, String> tokens = new HashMap<>();
+                final Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", accessToken);
                 tokens.put("refresh_token", refreshToken);
 

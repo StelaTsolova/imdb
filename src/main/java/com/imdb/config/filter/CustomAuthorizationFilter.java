@@ -24,25 +24,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+                                    final FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals(PATH_SEARCH) || request.getServletPath().equals(PATH_INDEX)) {
             filterChain.doFilter(request, response);
         } else {
-            String authorizationHeader = request.getHeader(AUTHORIZATION);
+            final String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
-                    String token = authorizationHeader.substring("Bearer ".length());
-                    Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
-                    JWTVerifier verifier = JWT.require(algorithm).build();
-                    DecodedJWT decodedJWT = verifier.verify(token);
+                    final String token = authorizationHeader.substring("Bearer ".length());
+                    final Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
+                    final JWTVerifier verifier = JWT.require(algorithm).build();
+                    final DecodedJWT decodedJWT = verifier.verify(token);
 
-                    String email = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                    final String email = decodedJWT.getSubject();
+                    final String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                    final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     Arrays.stream(roles)
                             .forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
+                    final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                     filterChain.doFilter(request, response);

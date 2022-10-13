@@ -18,8 +18,8 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
 
     @Override
-    public double updateRating(Movie movie, double scour) {
-        Rating rating = ratingRepository.findByMovie(movie)
+    public double updateRating(final Movie movie, final double scour) {
+        final Rating rating = ratingRepository.findByMovie(movie)
                 .orElseThrow(() -> new ObjectNotFoundException("Rating of movie " + movie + " is not found."));
 
         rating.increaseRating(scour);
@@ -30,15 +30,15 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public Rating createRating(RatingChangeDto ratingChangeDto, Movie movie) {
-        Rating rating = new Rating(ratingChangeDto.getCountScours(), ratingChangeDto.getScours(), movie);
+    public Rating createRating(final RatingChangeDto ratingChangeDto, final Movie movie) {
+        final Rating rating = new Rating(ratingChangeDto.getCountScours(), ratingChangeDto.getScours(), movie);
 
         log.info("Created new rating");
         return ratingRepository.save(rating);
     }
 
     @Override
-    public void removeRating(Rating rating) {
+    public void removeRating(final Rating rating) {
         ratingRepository.delete(rating);
 
         log.info("Deleted rating with id {}", rating.getId());

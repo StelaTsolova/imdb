@@ -21,8 +21,8 @@ public class ActorServiceImpl implements ActorService {
     private final ActorMapper actorMapper;
 
     @Override
-    public Actor getActor(ActorDto actorDto) {
-        Optional<Actor> actor = actorRepository
+    public Actor getActor(final ActorDto actorDto) {
+        final Optional<Actor> actor = actorRepository
                 .findByFirstNameAndLastName(actorDto.getFirstName(), actorDto.getLastName());
 
         if (actor.isEmpty()) {
@@ -34,7 +34,7 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public void addMovieToActor(Movie movie, Actor actor) {
+    public void addMovieToActor(final Movie movie, final Actor actor) {
         actor.getMovies().add(movie);
 
         actorRepository.save(actor);
@@ -42,7 +42,7 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
-    public void removeMovieFromActor(Movie movie, Actor actor) {
+    public void removeMovieFromActor(final Movie movie, final Actor actor) {
         actor.getMovies().remove(movie);
 
         actorRepository.save(actor);

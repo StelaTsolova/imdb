@@ -30,35 +30,35 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    public Authentication attemptAuthentication(final HttpServletRequest request, final HttpServletResponse response) throws AuthenticationException {
+        final String email = request.getParameter("email");
+        final String password = request.getParameter("password");
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+        final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         return this.authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain chain, Authentication authentication) throws IOException {
-        User user = (User) authentication.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
-        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        Date expiresAtAccess = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+    protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
+                                            final FilterChain chain, final Authentication authentication) throws IOException {
+        final User user = (User) authentication.getPrincipal();
+        final Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
+        final List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        final Date expiresAtAccess = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 
-        String accessToken = buildAccessToken(user.getUsername(), expiresAtAccess,
+        final String accessToken = buildAccessToken(user.getUsername(), expiresAtAccess,
                 request.getRequestURL().toString(), "roles", roles, algorithm);
 
-        Date expiresAtRefresh = new Date(System.currentTimeMillis() + 20 * 24 * 60 * 60 * 1000);
+        final Date expiresAtRefresh = new Date(System.currentTimeMillis() + 20 * 24 * 60 * 60 * 1000);
 
-        String refreshToken = buildRefreshToken(user.getUsername(), expiresAtRefresh,
+        final String refreshToken = buildRefreshToken(user.getUsername(), expiresAtRefresh,
                 request.getRequestURL().toString(), algorithm);
 
 //        response.setHeader("access_token", accessToken);
 //        response.setHeader("refresh_token", refreshToken);
 
-        Map<String, String> tokens = new HashMap<>();
+        final Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
 

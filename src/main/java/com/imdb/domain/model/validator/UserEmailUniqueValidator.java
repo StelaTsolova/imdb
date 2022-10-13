@@ -12,7 +12,7 @@ public class UserEmailUniqueValidator implements ConstraintValidator<UserEmailUn
     private final UserEntityService userEntityService;
 
     @Override
-    public boolean isValid(String email, ConstraintValidatorContext context) {
+    public boolean isValid(final String email, final ConstraintValidatorContext context) {
         if (email == null) {
             return true;
         }

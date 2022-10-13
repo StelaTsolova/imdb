@@ -22,8 +22,8 @@ public class UserEntityServiceImpl implements UserEntityService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void registerUser(UserEntityRegisterDto userEntityRegisterDto) {
-        UserEntity userEntity = userEntityMapper.mapUserEntityRegisterDtoToUserEntity(userEntityRegisterDto);
+    public void registerUser(final UserEntityRegisterDto userEntityRegisterDto) {
+        final UserEntity userEntity = userEntityMapper.mapUserEntityRegisterDtoToUserEntity(userEntityRegisterDto);
         userEntity.setPassword(this.passwordEncoder.encode(userEntityRegisterDto.getPassword()));
         userEntity.setRole(Role.USER);
 
@@ -31,20 +31,20 @@ public class UserEntityServiceImpl implements UserEntityService {
     }
 
     @Override
-    public boolean isNotExistByEmail(String email) {
+    public boolean isNotExistByEmail(final String email) {
         return repository.findByEmail(email).isEmpty();
     }
 
     @Override
-    public void changeUserRole(RoleChangeDto roleChangeDto) {
-        UserEntity user = getUserEntityByEmail(roleChangeDto.getUserEmail());
+    public void changeUserRole(final RoleChangeDto roleChangeDto) {
+        final UserEntity user = getUserEntityByEmail(roleChangeDto.getUserEmail());
         user.setRole(Role.valueOf(roleChangeDto.getRole().toUpperCase()));
 
         repository.save(user);
     }
 
     @Override
-    public UserEntity getUserEntityByEmail(String email) {
+    public UserEntity getUserEntityByEmail(final String email) {
         return this.repository.findByEmail(email)
                 .orElseThrow(() -> new ObjectNotFoundException("User with email " + email + " is not found."));
     }

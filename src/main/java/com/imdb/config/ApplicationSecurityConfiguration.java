@@ -25,9 +25,9 @@ public class ApplicationSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+        final AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(this.userDetailsService);
-        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+        final AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
         httpSecurity
                 .csrf().disable()

@@ -25,17 +25,17 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
     @Override
-    public CloudinaryImage upload(MultipartFile multipartFile) {
+    public CloudinaryImage upload(final MultipartFile multipartFile) {
         File tempFile = null;
 
         try {
             tempFile = File.createTempFile(TEMP_FILE, multipartFile.getOriginalFilename());
             multipartFile.transferTo(tempFile);
             @SuppressWarnings("unchecked")
-            Map<String, String> result = cloudinary.uploader().upload(tempFile, Map.of("folder", FOLDER_NAME));
+            final Map<String, String> result = cloudinary.uploader().upload(tempFile, Map.of("folder", FOLDER_NAME));
 
-            String url = result.getOrDefault(URL, "https://cdn2.vectorstock.com/i/1000x1000/82/41/404-error-page-not-found-funny-fat-cat-vector-21288241.jpg");
-            String publicId = result.getOrDefault(PUBLIC_ID, "");
+            final String url = result.getOrDefault(URL, "https://cdn2.vectorstock.com/i/1000x1000/82/41/404-error-page-not-found-funny-fat-cat-vector-21288241.jpg");
+            final String publicId = result.getOrDefault(PUBLIC_ID, "");
 
             return new CloudinaryImage(url, publicId);
         } catch (IOException exception) {
@@ -47,7 +47,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     }
 
     @Override
-    public boolean delete(String publicId) {
+    public boolean delete(final String publicId) {
         try {
             this.cloudinary.uploader().destroy(publicId, Map.of("folder", FOLDER_NAME));
         } catch (IOException e) {

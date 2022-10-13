@@ -20,14 +20,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserEntityRepository userEntityRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
         return this.userEntityRepository.findByEmail(email)
                 .map(this::mapToUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " is not found!"));
     }
 
-    private UserDetails mapToUserDetails(UserEntity userEntity) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()));
+    private UserDetails mapToUserDetails(final UserEntity userEntity) {
+        final List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()));
 
         return new User(
                 userEntity.getEmail(),

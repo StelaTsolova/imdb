@@ -27,8 +27,8 @@ public class UtilClass {
     public static final String PATH_CONTROL = "/control";
     public static final String PATH_MY = "/my";
 
-    public static Map<String, String> getErrorMessages(List<ObjectError> allErrors) {
-        Map<String, String> errorMessages = new HashMap<>();
+    public static Map<String, String> getErrorMessages(final List<ObjectError> allErrors) {
+        final Map<String, String> errorMessages = new HashMap<>();
 
         for (Object object : allErrors) {
             if (object instanceof FieldError fieldError) {
@@ -41,8 +41,8 @@ public class UtilClass {
         return errorMessages;
     }
 
-    public static String buildAccessToken(String subject, Date expiresAt, String issuer,
-                                          String claimName, List<String> claimValue, Algorithm algorithm) {
+    public static String buildAccessToken(final String subject, final Date expiresAt, final String issuer,
+                                          final String claimName, final List<String> claimValue, final Algorithm algorithm) {
         return JWT.create()
                 .withSubject(subject)
                 .withExpiresAt(expiresAt)
@@ -51,7 +51,8 @@ public class UtilClass {
                 .sign(algorithm);
     }
 
-    public static String buildRefreshToken(String subject, Date expiresAt, String issuer, Algorithm algorithm) {
+    public static String buildRefreshToken(final String subject, final Date expiresAt,
+                                           final String issuer, final Algorithm algorithm) {
         return JWT.create()
                 .withSubject(subject)
                 .withExpiresAt(expiresAt)
@@ -59,10 +60,10 @@ public class UtilClass {
                 .sign(algorithm);
     }
 
-    public static void sendErrors(HttpServletResponse response, int status, String errorName,
-                                  String message, String contentType) throws IOException {
+    public static void sendErrors(final HttpServletResponse response, final int status, final String errorName,
+                                  final String message, final String contentType) throws IOException {
         response.setStatus(status);
-        Map<String, String> error = new HashMap<>();
+        final Map<String, String> error = new HashMap<>();
         error.put(errorName, message);
         response.setContentType(contentType);
 

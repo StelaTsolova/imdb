@@ -17,8 +17,8 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     @Override
-    public Genre getGenre(String name) {
-        Optional<Genre> genre = genreRepository.findByName(name);
+    public Genre getGenre(final String name) {
+        final Optional<Genre> genre = genreRepository.findByName(name);
 
         if(genre.isEmpty()){
             Genre newGenre = new Genre();

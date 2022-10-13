@@ -38,21 +38,21 @@ public class MovieController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createMovie(@RequestBody @Valid MovieChangeDto movieChangeDto,
-                                         BindingResult bindingResult, UriComponentsBuilder builder) {
+    public ResponseEntity<?> createMovie(@RequestBody @Valid final MovieChangeDto movieChangeDto,
+                                         final BindingResult bindingResult, final UriComponentsBuilder builder) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(UtilClass.getErrorMessages(bindingResult.getAllErrors()));
         }
 
-        Long movieId = movieService.createMovie(movieChangeDto);
-        URI location = builder.path("/movie/{id}").buildAndExpand(movieId).toUri();
+        final Long movieId = movieService.createMovie(movieChangeDto);
+        final URI location = builder.path("/movie/{id}").buildAndExpand(movieId).toUri();
 
         return ResponseEntity.created(location).build();
     }
 
     @PostMapping(UtilClass.PATH_ID + UtilClass.PATH_PICTURE)
-    public ResponseEntity<?> savePicture(@PathVariable(name = "id") Long movieId,
-                                         @RequestBody MultipartFile multipartFile) {
+    public ResponseEntity<?> savePicture(@PathVariable(name = "id") final Long movieId,
+                                         @RequestBody final MultipartFile multipartFile) {
         movieService.addPictureToMovie(movieId, multipartFile);
 
         return ResponseEntity.ok().build();
@@ -60,8 +60,8 @@ public class MovieController {
 
     @PutMapping(UtilClass.PATH_ID)
     @PreAuthorize(value = "ADMIN")
-    public ResponseEntity<?> editMovie(@PathVariable Long id, @RequestBody @Valid MovieChangeDto movieChangeDto,
-                                       BindingResult bindingResult) {
+    public ResponseEntity<?> editMovie(@PathVariable final Long id, @RequestBody @Valid final MovieChangeDto movieChangeDto,
+                                       final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(UtilClass.getErrorMessages(bindingResult.getAllErrors()));
         }
@@ -72,33 +72,33 @@ public class MovieController {
     }
 
     @DeleteMapping(UtilClass.PATH_ID)
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<?> deleteMovie(@PathVariable final Long id) {
         this.movieService.deleteMovie(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(UtilClass.PATH_MY)
-    public ResponseEntity<List<MovieDto>> getMoviesByUser(Principal principal) {
+    public ResponseEntity<List<MovieDto>> getMoviesByUser(final Principal principal) {
         return ResponseEntity.ok(this.movieService.getMoviesByUserEmail(principal.getName()));
     }
 
     @PostMapping(UtilClass.PATH_ID)
-    public ResponseEntity<?> changeRating(final @PathVariable(name = "id") Long movieId,
-                                          final @RequestBody RatingDto ratingDto,
+    public ResponseEntity<?> changeRating(@PathVariable(name = "id") final Long movieId,
+                                          @RequestBody final RatingDto ratingDto,
                                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(UtilClass.getErrorMessages(bindingResult.getAllErrors()));
         }
 
-        double averageRating = movieService.updateRating(movieId, ratingDto);
+        final double averageRating = movieService.updateRating(movieId, ratingDto);
 
         return ResponseEntity.ok().body(Map.of("rating", averageRating));
     }
 
     @GetMapping(UtilClass.PATH_SEARCH)
-    public ResponseEntity<List<MovieDto>> searchMovie(@RequestParam(name = "keyword") String keyword,
-                                                      @RequestBody SearchDto searchDto) {
+    public ResponseEntity<List<MovieDto>> searchMovie(@RequestParam(name = "keyword") final String keyword,
+                                                      @RequestBody final SearchDto searchDto) {
         return ResponseEntity.ok(this.movieService.searchMovie(keyword, searchDto));
     }
 }

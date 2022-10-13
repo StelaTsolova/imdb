@@ -21,10 +21,10 @@ public class PictureServiceImpl implements PictureService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public Picture savePicture(MultipartFile image, Movie movie) {
-        CloudinaryImage cloudinaryImage = cloudinaryService.upload(image);
+    public Picture savePicture(final MultipartFile image, final Movie movie) {
+        final CloudinaryImage cloudinaryImage = cloudinaryService.upload(image);
 
-        Picture picture = new Picture(cloudinaryImage.getUrl(), cloudinaryImage.getPublicId());
+        final Picture picture = new Picture(cloudinaryImage.getUrl(), cloudinaryImage.getPublicId());
         picture.setMovie(movie);
 
         log.info("Created new picture");
@@ -32,8 +32,8 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public void deletePictureByUrl(String url) {
-        Picture picture = pictureRepository.findByUrl(url)
+    public void deletePictureByUrl(final String url) {
+        final Picture picture = pictureRepository.findByUrl(url)
                 .orElseThrow(() -> new ObjectNotFoundException("Picture with url " + url + " is not found!"));
 
         if (this.cloudinaryService.delete(picture.getPublicId())) {

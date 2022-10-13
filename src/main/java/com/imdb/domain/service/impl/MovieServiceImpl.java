@@ -43,16 +43,16 @@ public class MovieServiceImpl implements MovieService {
     private final EntityManager entityManager;
 
     @Override
-    public Page<MovieDto> getAllMovies(Integer pageNo, Integer pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+    public Page<MovieDto> getAllMovies(final Integer pageNo, final Integer pageSize, final String sortBy) {
+        final Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 
         return this.movieRepository.findAll(pageable)
                 .map(movieMapper::mapMovieToMovieDto);
     }
 
     @Override
-    public Long createMovie(MovieChangeDto movieChangeDto) {
-        Movie movie = movieMapper.mapMovieChangeDtoToMovie(movieChangeDto);
+    public Long createMovie(final MovieChangeDto movieChangeDto) {
+        final Movie movie = movieMapper.mapMovieChangeDtoToMovie(movieChangeDto);
         if (movie.getActors() == null) {
             movie.setActors(new ArrayList<>());
         } else {
@@ -73,8 +73,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void updateMovie(Long id, MovieChangeDto movieChangeDto) {
-        Movie movie = getMovieById(id);
+    public void updateMovie(final Long id, final MovieChangeDto movieChangeDto) {
+        final Movie movie = getMovieById(id);
 
         addGenreToMovie(movie, movieChangeDto.getGenre());
         addActorsToMovie(movie, movieChangeDto.getActors());
@@ -87,8 +87,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void deleteMovie(Long id) {
-        Movie movie = getMovieById(id);
+    public void deleteMovie(final Long id) {
+        final Movie movie = getMovieById(id);
 
         this.movieRepository.delete(movie);
         this.pictureService.deletePictureByUrl(movie.getPicture().getUrl());
@@ -97,8 +97,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieDto> getMoviesByUserEmail(String email) {
-        List<Movie> movies = this.movieRepository.findByOwner_Email(email)
+    public List<MovieDto> getMoviesByUserEmail(final String email) {
+        final List<Movie> movies = this.movieRepository.findByOwner_Email(email)
                 .orElseThrow(() -> new ObjectNotFoundException("Movie with owner's email " + email + " is not found."));
 
         return movies.stream()
@@ -107,12 +107,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void addPictureToMovie(Long movieId, MultipartFile image) {
+    public void addPictureToMovie(final Long movieId, final MultipartFile image) {
         if (image == null) {
             return;
         }
 
-        Movie movie = getMovieById(movieId);
+        final Movie movie = getMovieById(movieId);
         movie.setPicture(pictureService.savePicture(image, movie));
 
         movieRepository.save(movie);
@@ -121,42 +121,40 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie getMovieById(Long id) {
+    public Movie getMovieById(final Long id) {
         return movieRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Movie with id " + id + " is not found."));
     }
 
     @Override
-    public double updateRating(Long movieId, RatingDto ratingDto) {
+    public double updateRating(final Long movieId, final RatingDto ratingDto) {
         log.info("Movie with id {} updated its rating", movieId);
 
         return ratingService.updateRating(getMovieById(movieId), ratingDto.getScour());
     }
 
     @Override
-    public List<MovieDto> searchMovie(String keyword, SearchDto searchDto) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Movie> criteriaQuery = criteriaBuilder.createQuery(Movie.class);
-        Root<Movie> movieRoot = criteriaQuery.from(Movie.class);
+    public List<MovieDto> searchMovie(final String keyword, final SearchDto searchDto) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Movie> criteriaQuery = criteriaBuilder.createQuery(Movie.class);
+        final Root<Movie> movieRoot = criteriaQuery.from(Movie.class);
 
-        List<String> columns = searchDto.getColumns();
-        List<Predicate> predicates = new ArrayList<>();
+        final List<String> columns = searchDto.getColumns();
+        final  List<Predicate> predicates = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             predicates.add(criteriaBuilder.or(criteriaBuilder.like
                     (movieRoot.get(String.valueOf(columns.get(i)))
                             .as(String.class), "%" + keyword + "%")));
         }
-
         criteriaQuery.select(movieRoot).where(
                 criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()])));
 
-        List<Movie> resultList = entityManager.createQuery(criteriaQuery).getResultList();
-
+        final List<Movie> resultList = entityManager.createQuery(criteriaQuery).getResultList();
 
         return resultList.stream().map(movieMapper::mapMovieToMovieDto).collect(Collectors.toList());
     }
 
-    private void addGenreToMovie(Movie movie, String genre) {
+    private void addGenreToMovie(final Movie movie, final String genre) {
         if (genre != null) {
             movie.setGenre(genreService.getGenre(genre));
         } else {
@@ -164,7 +162,7 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
-    private void addActorsToMovie(Movie movie, List<ActorDto> actors) {
+    private void addActorsToMovie(final Movie movie, final List<ActorDto> actors) {
         if (movie.getActors() == null || movie.getActors().isEmpty()) {
             movie.setActors(new ArrayList<>());
             addActors(movie, actors);
@@ -178,10 +176,10 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
-    private void addActors(Movie movie, List<ActorDto> actors) {
+    private void addActors(final Movie movie, final List<ActorDto> actors) {
         if (actors != null) {
             actors.forEach(actorDto -> {
-                Actor actor = actorService.getActor(actorDto);
+                final Actor actor = actorService.getActor(actorDto);
                 movie.getActors().add(actor);
 
                 actorService.addMovieToActor(movie, actor);
@@ -189,7 +187,7 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
-    private void addRatingToMovie(Movie movie, RatingChangeDto ratingChangeDto) {
+    private void addRatingToMovie(final Movie movie, final RatingChangeDto ratingChangeDto) {
         if (ratingChangeDto != null) {
             movie.setRating(ratingService.createRating(ratingChangeDto, movie));
         } else {
@@ -198,7 +196,7 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
-    private void addRemainingFieldsToMovie(Movie movie, MovieChangeDto movieEditDto) {
+    private void addRemainingFieldsToMovie(final Movie movie, final MovieChangeDto movieEditDto) {
         movie.setName(movieEditDto.getName());
         movie.setTrailerUrl(movieEditDto.getTrailerUrl());
         movie.setYear(movieEditDto.getYear());
