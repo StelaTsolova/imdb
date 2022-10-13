@@ -1,6 +1,8 @@
-package com.imdb.domain.service.cloudinary;
+package com.imdb.domain.service.cloudinary.impl;
 
 import com.cloudinary.Cloudinary;
+import com.imdb.domain.service.cloudinary.CloudinaryImage;
+import com.imdb.domain.service.cloudinary.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +21,6 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private static final String PUBLIC_ID = "public_id";
 
     private final Cloudinary cloudinary;
-
 
     @Override
     public CloudinaryImage upload(MultipartFile multipartFile) {
