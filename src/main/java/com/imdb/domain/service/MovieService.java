@@ -1,9 +1,6 @@
 package com.imdb.domain.service;
 
-import com.imdb.domain.model.dto.MovieDto;
-import com.imdb.domain.model.dto.MovieChangeDto;
-import com.imdb.domain.model.dto.RatingDto;
-import com.imdb.domain.model.dto.SearchDto;
+import com.imdb.domain.model.dto.*;
 import com.imdb.domain.model.entity.Movie;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,9 +11,9 @@ public interface MovieService {
 
     Page<MovieDto> getAllMovies(Integer pageNo, Integer pageSize, String sortBy);
 
-    void updateMovie(Long id, MovieChangeDto movieChangeDto);
+    void updateMovie(Long id, MovieUpdateDto movieUpdateDto);
 
-    Long createMovie(MovieChangeDto movieChangeDto);
+    Long createMovie(MovieCreateDto movieCreateDto);
 
     void deleteMovie(Long id);
 

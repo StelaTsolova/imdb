@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PictureServiceImpl implements PictureService {
 
     private final PictureRepository pictureRepository;
@@ -27,7 +26,6 @@ public class PictureServiceImpl implements PictureService {
         final Picture picture = new Picture(cloudinaryImage.getUrl(), cloudinaryImage.getPublicId());
         picture.setMovie(movie);
 
-        log.info("Created new picture");
         return pictureRepository.save(picture);
     }
 
@@ -36,8 +34,7 @@ public class PictureServiceImpl implements PictureService {
         final Picture picture = pictureRepository.findByUrl(url)
                 .orElseThrow(() -> new ObjectNotFoundException("Picture with url " + url + " is not found!"));
 
-        if (this.cloudinaryService.delete(picture.getPublicId())) {
-            log.info("Deleted picture with id {}", picture.getId());
+        if (cloudinaryService.delete(picture.getPublicId())) {
             pictureRepository.delete(picture);
         }
     }

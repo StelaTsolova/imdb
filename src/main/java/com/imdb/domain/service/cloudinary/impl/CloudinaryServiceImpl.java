@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CloudinaryServiceImpl implements CloudinaryService {
 
     private static final String FOLDER_NAME = "imdb";
@@ -39,9 +38,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
             return new CloudinaryImage(url, publicId);
         } catch (IOException exception) {
-            log.info("CloudinaryImage upload method throw IOException with message {}", exception.getMessage());
             return null;
         } finally {
+            assert tempFile != null;
             tempFile.delete();
         }
     }
@@ -49,7 +48,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public boolean delete(final String publicId) {
         try {
-            this.cloudinary.uploader().destroy(publicId, Map.of("folder", FOLDER_NAME));
+            cloudinary.uploader().destroy(publicId, Map.of("folder", FOLDER_NAME));
         } catch (IOException e) {
             return false;
         }

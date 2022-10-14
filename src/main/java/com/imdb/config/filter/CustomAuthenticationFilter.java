@@ -36,7 +36,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
-        return this.authenticationManager.authenticate(authenticationToken);
+        return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
@@ -54,9 +54,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         final String refreshToken = buildRefreshToken(user.getUsername(), expiresAtRefresh,
                 request.getRequestURL().toString(), algorithm);
-
-//        response.setHeader("access_token", accessToken);
-//        response.setHeader("refresh_token", refreshToken);
 
         final Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);

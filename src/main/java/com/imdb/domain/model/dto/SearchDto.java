@@ -11,4 +11,7 @@ public class SearchDto {
 
     private List<String> columns;
 
+    public String toString(){
+        return "columns=[" + String.join(", ", columns) + "]";
+    }
 }

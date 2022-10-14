@@ -17,27 +17,27 @@ public class Rating {
     @Setter(AccessLevel.PRIVATE)
     private Long id;
 
-    @Column(name = "count_scours", nullable = false)
-    private int countScours;
+    @Column(name = "count_scores", nullable = false)
+    private int countScores;
 
     @Column(nullable = false)
-    private double scours;
+    private double scores;
 
     @OneToOne(mappedBy = "rating")
     private Movie movie;
 
-    public Rating(int countScours, double scours, Movie movie) {
-       setCountScours(countScours);
-       setScours(scours);
+    public Rating(int countScores, double scores, Movie movie) {
+       setCountScores(countScores);
+       setScores(scores);
        setMovie(movie);
     }
 
     public double getAverageRating(){
-        return DoubleRounder.round(scours / countScours, 1);
+        return DoubleRounder.round(scores / countScores, 1);
     }
 
-    public void increaseRating(double scour){
-        scours += scour;
-        countScours++;
+    public void increaseRating(double score){
+        scores += score;
+        countScores++;
     }
 }

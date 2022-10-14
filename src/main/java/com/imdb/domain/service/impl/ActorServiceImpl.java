@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ActorServiceImpl implements ActorService {
 
     private final ActorRepository actorRepository;
@@ -26,8 +25,7 @@ public class ActorServiceImpl implements ActorService {
                 .findByFirstNameAndLastName(actorDto.getFirstName(), actorDto.getLastName());
 
         if (actor.isEmpty()) {
-            log.info("Created new actor");
-            return this.actorRepository.save(actorMapper.mapActorDtoToActor(actorDto));
+            return actorRepository.save(actorMapper.mapActorDtoToActor(actorDto));
         }
 
         return actor.get();
@@ -38,7 +36,6 @@ public class ActorServiceImpl implements ActorService {
         actor.getMovies().add(movie);
 
         actorRepository.save(actor);
-        log.info("Added movie with id {} to actor with id {}", movie.getId(), actor.getId());
     }
 
     @Override
@@ -46,6 +43,5 @@ public class ActorServiceImpl implements ActorService {
         actor.getMovies().remove(movie);
 
         actorRepository.save(actor);
-        log.info("Deleted movie with id {} from actor with id {}", movie.getId(), actor.getId());
     }
 }

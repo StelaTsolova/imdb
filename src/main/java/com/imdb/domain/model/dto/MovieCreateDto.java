@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class MovieChangeDto {
+public class MovieCreateDto {
 
     @NotBlank
     private String name;

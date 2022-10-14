@@ -3,8 +3,6 @@ package com.imdb.domain.model.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -14,10 +12,14 @@ public class RatingChangeDto {
 
     @NotNull
     @Min(1)
-    private Integer countScours;
+    private Integer countScores;
 
     @NotNull
     @Min(1)
-    private Double scours;
+    private Double scores;
+
+    public String toString(){
+        return "[countScores=" + countScores + " scores=" + scores + "]";
+    }
 
 }

@@ -16,4 +16,14 @@ public class MovieDto {
     private String genre;
     private String imgUrl;
     private String trailerUrl;
+
+    public String toString(){
+        return new StringBuilder().append("[name=").append(name)
+                .append(" year=").append(year)
+                .append(" rating=").append(rating)
+                .append(" actors={").append(actors)
+                .append("} genre").append(genre)
+                .append(" imgUrl").append(imgUrl)
+                .append(" trailerUrl").append(trailerUrl).toString();
+    }
 }

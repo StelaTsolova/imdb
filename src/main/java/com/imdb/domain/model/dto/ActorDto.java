@@ -14,4 +14,8 @@ public class ActorDto {
 
     private String lastName;
 
+    public String toString(){
+        return "firstName=" + firstName + " lastName=" + lastName;
+    }
+
 }

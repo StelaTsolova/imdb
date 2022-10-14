@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
@@ -24,7 +23,6 @@ public class GenreServiceImpl implements GenreService {
             Genre newGenre = new Genre();
             newGenre.setName(name);
 
-            log.info("Created new genre");
             return genreRepository.save(newGenre);
         }
 

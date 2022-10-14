@@ -39,7 +39,8 @@ class MovieServiceImplTest {
     private MovieService movieServiceTest;
     private Movie movieTest;
     private MovieDto movieDtoTest;
-    private MovieChangeDto movieChangeDtoTest;
+    private MovieCreateDto movieCreateDtoTest;
+    private MovieUpdateDto movieUpdateDtoTest;
 
     @Mock
     private MovieRepository movieRepositoryMock;
@@ -67,8 +68,11 @@ class MovieServiceImplTest {
         movieDtoTest = new MovieDto();
         movieDtoTest.setName(movieTest.getName());
 
-        movieChangeDtoTest = new MovieChangeDto();
-        movieChangeDtoTest.setName(MOVIE_NEW_NAME);
+        movieCreateDtoTest = new MovieCreateDto();
+        movieCreateDtoTest.setName(MOVIE_NEW_NAME);
+
+        movieUpdateDtoTest = new MovieUpdateDto();
+        movieUpdateDtoTest.setName(MOVIE_NEW_NAME);
     }
 
     @Test
@@ -90,15 +94,15 @@ class MovieServiceImplTest {
         final Genre genre = new Genre();
         genre.setName(GenreServiceImplTest.GENRE_NAME);
 
-        movieChangeDtoTest.setGenre(GenreServiceImplTest.GENRE_NAME);
+        movieCreateDtoTest.setGenre(GenreServiceImplTest.GENRE_NAME);
 
         assertNull(movieTest.getGenre());
 
-        Mockito.when(movieMapperMock.mapMovieChangeDtoToMovie(movieChangeDtoTest)).thenReturn(movieTest);
+        Mockito.when(movieMapperMock.mapMovieCreateDtoToMovie(movieCreateDtoTest)).thenReturn(movieTest);
         Mockito.when(genreServiceMock.getGenre(GenreServiceImplTest.GENRE_NAME)).thenReturn(genre);
         Mockito.when(movieRepositoryMock.save(movieTest)).thenReturn(movieTest);
 
-        movieServiceTest.createMovie(movieChangeDtoTest);
+        movieServiceTest.createMovie(movieCreateDtoTest);
 
         assertEquals(movieTest.getGenre().getName(), GenreServiceImplTest.GENRE_NAME);
     }
@@ -108,7 +112,7 @@ class MovieServiceImplTest {
         final Actor actor = new Actor();
         actor.setFirstName(ACTOR_FIRST_NAME);
 
-        movieChangeDtoTest.setActors(List.of(new ActorDto()));
+        movieUpdateDtoTest.setActors(List.of(new ActorDto()));
 
         Mockito.when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         Mockito.when(actorServiceMock.getActor(Mockito.any())).thenReturn(actor);
@@ -116,7 +120,7 @@ class MovieServiceImplTest {
         Assertions.assertEquals(movieTest.getName(), MOVIE_NAME);
         assertNull(movieTest.getActors());
 
-        movieServiceTest.updateMovie(ID, movieChangeDtoTest);
+        movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         Assertions.assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
         Assertions.assertEquals(movieTest.getActors().get(0).getFirstName(), ACTOR_FIRST_NAME);
@@ -131,7 +135,7 @@ class MovieServiceImplTest {
 
         final Actor newActor = new Actor();
         newActor.setFirstName("NewName");
-        movieChangeDtoTest.setActors(List.of(new ActorDto()));
+        movieUpdateDtoTest.setActors(List.of(new ActorDto()));
 
         Mockito.when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         Mockito.when(actorServiceMock.getActor(Mockito.any())).thenReturn(newActor);
@@ -139,7 +143,7 @@ class MovieServiceImplTest {
         Assertions.assertEquals(movieTest.getName(), MOVIE_NAME);
         Assertions.assertEquals(movieTest.getActors().get(0).getFirstName(), ACTOR_FIRST_NAME);
 
-        movieServiceTest.updateMovie(ID, movieChangeDtoTest);
+        movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         Assertions.assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
         Assertions.assertEquals(movieTest.getActors().get(0).getFirstName(), "NewName");
@@ -151,7 +155,7 @@ class MovieServiceImplTest {
         rating.setCountScours(RATING_COUNT_SCORES);
         rating.setScours(RATING_SCORES);
 
-        movieChangeDtoTest.setRating(new RatingChangeDto());
+        movieUpdateDtoTest.setRating(new RatingChangeDto());
 
         Mockito.when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         Mockito.when(ratingServiceMock.createRating(Mockito.any(), Mockito.any())).thenReturn(rating);
@@ -159,7 +163,7 @@ class MovieServiceImplTest {
         Assertions.assertEquals(movieTest.getName(), MOVIE_NAME);
         assertNull(movieTest.getRating());
 
-        movieServiceTest.updateMovie(ID, movieChangeDtoTest);
+        movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         Assertions.assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
         Assertions.assertEquals(movieTest.getRating().getCountScours(), RATING_COUNT_SCORES);
@@ -176,7 +180,7 @@ class MovieServiceImplTest {
         final Rating newRating = new Rating();
         newRating.setCountScours(RATING_COUNT_SCORES + 1);
         newRating.setScours(RATING_SCORES + 3);
-        movieChangeDtoTest.setRating(new RatingChangeDto());
+        movieUpdateDtoTest.setRating(new RatingChangeDto());
 
         Mockito.when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         Mockito.when(ratingServiceMock.createRating(Mockito.any(), Mockito.any())).thenReturn(newRating);
@@ -185,7 +189,7 @@ class MovieServiceImplTest {
         Assertions.assertEquals(movieTest.getRating().getCountScours(), RATING_COUNT_SCORES);
         Assertions.assertEquals(movieTest.getRating().getScours(), RATING_SCORES);
 
-        movieServiceTest.updateMovie(ID, movieChangeDtoTest);
+        movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         Assertions.assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
         Assertions.assertEquals(movieTest.getRating().getCountScours(), RATING_COUNT_SCORES + 1);
@@ -205,7 +209,7 @@ class MovieServiceImplTest {
         Assertions.assertEquals(movieTest.getRating().getCountScours(), RATING_COUNT_SCORES);
         Assertions.assertEquals(movieTest.getRating().getScours(), RATING_SCORES);
 
-        movieServiceTest.updateMovie(ID, movieChangeDtoTest);
+        movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         Assertions.assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
         assertNull(movieTest.getRating());

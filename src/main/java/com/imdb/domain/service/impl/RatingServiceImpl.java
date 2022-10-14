@@ -12,35 +12,34 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
 
     @Override
-    public double updateRating(final Movie movie, final double scour) {
+    public double updateRating(final Movie movie, final double score) {
         final Rating rating = ratingRepository.findByMovie(movie)
                 .orElseThrow(() -> new ObjectNotFoundException("Rating of movie " + movie + " is not found."));
 
-        rating.increaseRating(scour);
+        rating.increaseRating(score);
         ratingRepository.save(rating);
 
-        log.info("Rating with id {} is updated", rating.getId());
         return rating.getAverageRating();
     }
 
     @Override
     public Rating createRating(final RatingChangeDto ratingChangeDto, final Movie movie) {
-        final Rating rating = new Rating(ratingChangeDto.getCountScours(), ratingChangeDto.getScours(), movie);
+        final Rating rating = new Rating(ratingChangeDto.getCountScores(), ratingChangeDto.getScores(), movie);
 
-        log.info("Created new rating");
         return ratingRepository.save(rating);
     }
 
     @Override
     public void removeRating(final Rating rating) {
-        ratingRepository.delete(rating);
+        if(rating == null){
+            return;
+        }
 
-        log.info("Deleted rating with id {}", rating.getId());
+        ratingRepository.delete(rating);
     }
 }

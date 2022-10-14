@@ -26,7 +26,7 @@ public class ApplicationSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         final AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(this.userDetailsService);
+        authenticationManagerBuilder.userDetailsService(userDetailsService);
         final AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
         httpSecurity

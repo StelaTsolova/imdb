@@ -12,6 +12,4 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Optional<List<Movie>> findByOwner_Email(String email);
 
-//    @Query(value = "SELECT m FROM Movie m WHERE m = :columName")
-//    Page<Movie> findMoviesByNeshto(Pageable pageable, @Param("columName") String columName);
 }

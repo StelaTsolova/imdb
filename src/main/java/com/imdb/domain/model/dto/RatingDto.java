@@ -16,6 +16,6 @@ public class RatingDto {
     @NotNull
     @Min(1)
     @Max(10)
-    private double scour;
+    private double score;
 
 }

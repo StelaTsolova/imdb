@@ -48,8 +48,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-//                    response.setHeader("error", exception.getMessage());
-//                    response.setStatus(FORBIDDEN.value());
                     sendErrors(response, FORBIDDEN.value(), "error_message",
                             exception.getMessage(), APPLICATION_JSON_VALUE);
                 }

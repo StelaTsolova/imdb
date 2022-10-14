@@ -24,10 +24,10 @@ public class UserEntityServiceImpl implements UserEntityService {
     @Override
     public void registerUser(final UserEntityRegisterDto userEntityRegisterDto) {
         final UserEntity userEntity = userEntityMapper.mapUserEntityRegisterDtoToUserEntity(userEntityRegisterDto);
-        userEntity.setPassword(this.passwordEncoder.encode(userEntityRegisterDto.getPassword()));
+        userEntity.setPassword(passwordEncoder.encode(userEntityRegisterDto.getPassword()));
         userEntity.setRole(Role.USER);
 
-        this.repository.save(userEntity);
+        repository.save(userEntity);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class UserEntityServiceImpl implements UserEntityService {
 
     @Override
     public UserEntity getUserEntityByEmail(final String email) {
-        return this.repository.findByEmail(email)
+        return repository.findByEmail(email)
                 .orElseThrow(() -> new ObjectNotFoundException("User with email " + email + " is not found."));
     }
 }

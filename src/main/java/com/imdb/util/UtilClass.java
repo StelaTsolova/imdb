@@ -9,12 +9,9 @@ import org.springframework.validation.ObjectError;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Slf4j
 public class UtilClass {
     public static final String PATH_INDEX = "/";
     public static final String PATH_LOGIN = "/login";
@@ -33,12 +30,22 @@ public class UtilClass {
         for (Object object : allErrors) {
             if (object instanceof FieldError fieldError) {
                 errorMessages.put(fieldError.getField(), fieldError.getDefaultMessage());
-
-                log.info("Not valid filed {}, reason is {}", fieldError.getField(), fieldError.getDefaultMessage());
             }
         }
 
         return errorMessages;
+    }
+
+    public static String getErrorMessagesToString(final Map<String, String> errorMessages) {
+        StringBuilder stringBuilder = new StringBuilder().append("[");
+
+        String result = errorMessages.entrySet().stream().map(entry -> entry.getKey() + "=" + entry.getValue())
+                .collect(Collectors.joining(", "));
+
+        stringBuilder.append(result);
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 
     public static String buildAccessToken(final String subject, final Date expiresAt, final String issuer,

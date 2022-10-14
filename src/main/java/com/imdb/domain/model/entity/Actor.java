@@ -30,12 +30,4 @@ public class Actor {
     @ManyToMany(mappedBy = "actors")
     private List<Movie> movies = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
 }
