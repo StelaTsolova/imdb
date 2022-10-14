@@ -8,22 +8,20 @@ import com.imdb.domain.model.mapping.UserEntityMapper;
 import com.imdb.domain.repository.UserEntityRepository;
 import com.imdb.domain.service.UserEntityService;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
-import com.imdb.domain.service.impl.UserEntityServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserEntityServiceImplTest {
+class TestUserEntityService {
     public static final String USER_ENTITY_EMAIL = "u@gmail.com";
     public static final String USER_ENTITY_PASSWORD = "123456";
 
@@ -49,26 +47,26 @@ class UserEntityServiceImplTest {
         final UserEntityRegisterDto userEntityRegisterDto = new UserEntityRegisterDto();
         userEntityRegisterDto.setPassword(USER_ENTITY_PASSWORD);
 
-        Mockito.when(userEntityMapper.mapUserEntityRegisterDtoToUserEntity(userEntityRegisterDto))
+        when(userEntityMapper.mapUserEntityRegisterDtoToUserEntity(userEntityRegisterDto))
                 .thenReturn(userEntityTest);
 
         assertNull(userEntityTest.getRole());
 
         userEntityServiceTest.registerUser(userEntityRegisterDto);
 
-        Assertions.assertEquals(userEntityTest.getRole(), Role.USER);
+        assertEquals(userEntityTest.getRole(), Role.USER);
     }
 
     @Test
     public void isNotExistByEmailShouldReturnTrueWhenUserWithEmailNotExist() {
-        Mockito.when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL)).thenReturn(Optional.empty());
+        when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL)).thenReturn(Optional.empty());
 
         assertTrue(userEntityServiceTest.isNotExistByEmail(USER_ENTITY_EMAIL));
     }
 
     @Test
     public void isNotExistByEmailShouldReturnFalseWhenUserWithEmailExist() {
-        Mockito.when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
+        when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
                 .thenReturn(Optional.of(userEntityTest));
 
         assertFalse(userEntityServiceTest.isNotExistByEmail(USER_ENTITY_EMAIL));
@@ -80,32 +78,29 @@ class UserEntityServiceImplTest {
         roleChangeDto.setUserEmail(USER_ENTITY_EMAIL);
         roleChangeDto.setRole("usEr");
 
-        Mockito.when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
+        when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
                 .thenReturn(Optional.of(userEntityTest));
 
         assertNull(userEntityTest.getRole());
 
         userEntityServiceTest.changeUserRole(roleChangeDto);
 
-        Assertions.assertEquals(userEntityTest.getRole(), Role.USER);
+        assertEquals(userEntityTest.getRole(), Role.USER);
     }
 
     @Test
     public void getUserEntityByEmail(){
-        Mockito.when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
-                .thenReturn(Optional.of(userEntityTest));
+        when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL)).thenReturn(Optional.of(userEntityTest));
 
         final UserEntity userEntity = userEntityServiceTest.getUserEntityByEmail(USER_ENTITY_EMAIL);
 
-        Assertions.assertEquals(userEntity.getEmail(), userEntityTest.getEmail());
+        assertEquals(userEntity.getEmail(), userEntityTest.getEmail());
     }
 
     @Test
     public void getUserEntityByEmailShouldThrowWhenUserWithEmailNotExist(){
-        Mockito.when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL))
-                .thenReturn(Optional.empty());
+        when(userEntityRepositoryMock.findByEmail(USER_ENTITY_EMAIL)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(ObjectNotFoundException.class,
-                () -> userEntityServiceTest.getUserEntityByEmail(USER_ENTITY_EMAIL));
+        assertThrows(ObjectNotFoundException.class, () -> userEntityServiceTest.getUserEntityByEmail(USER_ENTITY_EMAIL));
     }
 }

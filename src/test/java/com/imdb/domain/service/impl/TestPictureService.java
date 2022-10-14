@@ -6,21 +6,20 @@ import com.imdb.domain.service.PictureService;
 import com.imdb.domain.service.cloudinary.CloudinaryImage;
 import com.imdb.domain.service.cloudinary.CloudinaryService;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
-import com.imdb.domain.service.impl.PictureServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.times;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PictureServiceImplTest {
+class TestPictureService {
     public static final String PICTURE_URL = "http://localhost:8080";
     public static final String PICTURE_PUBLIC_ID = "123";
 
@@ -33,7 +32,7 @@ class PictureServiceImplTest {
     private CloudinaryService cloudinaryServiceMock;
 
     @BeforeEach
-    void init(){
+    void init() {
         pictureServiceTest = new PictureServiceImpl(pictureRepositoryMock, cloudinaryServiceMock);
 
         pictureTest = new Picture();
@@ -42,30 +41,30 @@ class PictureServiceImplTest {
     }
 
     @Test
-    public void savePicture(){
-        Mockito.when(cloudinaryServiceMock.upload(Mockito.any())).thenReturn(new CloudinaryImage(PICTURE_URL, PICTURE_PUBLIC_ID));
-        Mockito.when(pictureRepositoryMock.save(Mockito.any())).thenReturn(pictureTest);
+    public void savePicture() {
+        when(cloudinaryServiceMock.upload(any())).thenReturn(new CloudinaryImage(PICTURE_URL, PICTURE_PUBLIC_ID));
+        when(pictureRepositoryMock.save(any())).thenReturn(pictureTest);
 
         final Picture picture = pictureServiceTest.savePicture(null, null);
 
-        Assertions.assertEquals(picture.getUrl(), pictureTest.getUrl());
-        Assertions.assertEquals(picture.getPublicId(), pictureTest.getPublicId());
+        assertEquals(picture.getUrl(), pictureTest.getUrl());
+        assertEquals(picture.getPublicId(), pictureTest.getPublicId());
     }
 
     @Test
-    public void deletePictureByUrl(){
-        Mockito.when(pictureRepositoryMock.findByUrl(PICTURE_URL)).thenReturn(Optional.of(pictureTest));
-        Mockito.when(cloudinaryServiceMock.delete(PICTURE_PUBLIC_ID)).thenReturn(true);
+    public void deletePictureByUrl() {
+        when(pictureRepositoryMock.findByUrl(PICTURE_URL)).thenReturn(Optional.of(pictureTest));
+        when(cloudinaryServiceMock.delete(PICTURE_PUBLIC_ID)).thenReturn(true);
 
         pictureServiceTest.deletePictureByUrl(PICTURE_URL);
 
-        Mockito.verify(pictureRepositoryMock, times(1)).delete(pictureTest);
+        verify(pictureRepositoryMock, times(1)).delete(pictureTest);
     }
 
     @Test
-    public void deletePictureByUrlShouldThrowWhenPictureWithUrlNotExist(){
-        Mockito.when(pictureRepositoryMock.findByUrl(PICTURE_URL)).thenReturn(Optional.empty());
+    public void deletePictureByUrlShouldThrowWhenPictureWithUrlNotExist() {
+        when(pictureRepositoryMock.findByUrl(PICTURE_URL)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(ObjectNotFoundException.class, () -> pictureServiceTest.deletePictureByUrl(PICTURE_URL));
+        assertThrows(ObjectNotFoundException.class, () -> pictureServiceTest.deletePictureByUrl(PICTURE_URL));
     }
 }

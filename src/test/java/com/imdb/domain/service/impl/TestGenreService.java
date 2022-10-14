@@ -3,19 +3,20 @@ package com.imdb.domain.service.impl;
 import com.imdb.domain.model.entity.Genre;
 import com.imdb.domain.repository.GenreRepository;
 import com.imdb.domain.service.GenreService;
-import com.imdb.domain.service.impl.GenreServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
-class GenreServiceImplTest {
+class TestGenreService {
     public static final String GENRE_NAME = "novel";
 
     private GenreService genreServiceTest;
@@ -34,22 +35,22 @@ class GenreServiceImplTest {
 
     @Test
     public void getGenreShouldCreateGenreWhenItNotExist() {
-        Mockito.when(genreRepositoryMock.findByName(Mockito.any()))
+        when(genreRepositoryMock.findByName(any()))
                 .thenReturn(Optional.empty());
-        Mockito.when(genreRepositoryMock.save(Mockito.any())).thenReturn(genreTest);
+        when(genreRepositoryMock.save(any())).thenReturn(genreTest);
 
         final Genre genre = genreServiceTest.getGenre("");
 
-        Assertions.assertEquals(genre.getName(), genreTest.getName());
+        assertEquals(genre.getName(), genreTest.getName());
     }
 
     @Test
     public void getGenreShouldReturnGenreWhenItExist() {
-        Mockito.when(genreRepositoryMock.findByName(Mockito.any()))
+        when(genreRepositoryMock.findByName(any()))
                 .thenReturn(Optional.of(genreTest));
 
         final Genre genre = genreServiceTest.getGenre("");
 
-        Assertions.assertEquals(genre.getName(), genreTest.getName());
+        assertEquals(genre.getName(), genreTest.getName());
     }
 }
