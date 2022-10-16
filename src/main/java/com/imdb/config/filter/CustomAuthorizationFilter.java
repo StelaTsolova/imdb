@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -17,9 +16,11 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.imdb.util.UtilClass.*;
+import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
@@ -40,11 +41,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     final String email = decodedJWT.getSubject();
                     final String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
                     final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    Arrays.stream(roles)
-                            .forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+                    stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
 
                     final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    getContext().setAuthentication(authenticationToken);
 
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {

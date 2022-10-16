@@ -10,7 +10,6 @@ import com.imdb.domain.model.entity.UserEntity;
 import com.imdb.domain.service.UserEntityService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imdb.util.UtilClass;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -93,7 +92,7 @@ public class UserEntityController {
                 final List<String> roles = List.of(user.getRole().name());
                 final Date expiresAt = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 
-                final String accessToken = UtilClass.buildAccessToken(user.getEmail(), expiresAt,
+                final String accessToken = buildAccessToken(user.getEmail(), expiresAt,
                         request.getRequestURL().toString(), "roles", roles, algorithm);
 
                 final Map<String, String> tokens = new HashMap<>();
@@ -104,7 +103,7 @@ public class UserEntityController {
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
             } catch (Exception exception) {
-                UtilClass.sendErrors(response, FORBIDDEN.value(), "error_message",
+                sendErrors(response, FORBIDDEN.value(), "error_message",
                         exception.getMessage(), APPLICATION_JSON_VALUE);
             }
         } else {

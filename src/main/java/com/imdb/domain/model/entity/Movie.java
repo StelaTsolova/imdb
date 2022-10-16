@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.decimal4j.util.DoubleRounder;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,8 +26,8 @@ public class Movie {
 
     private Integer year;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    private Rating rating;
+    @OneToMany(mappedBy = "movie")
+    private List<Rating> ratings;
 
     @ManyToMany
     private List<Actor> actors;
@@ -42,5 +43,12 @@ public class Movie {
 
     @OneToOne
     private Picture picture;
+
+    public double getAverageRating(){
+        double scores =  ratings.stream().mapToDouble(Rating::getScore).sum();
+        int countScores = ratings.size();
+
+        return DoubleRounder.round(scores / countScores , 1);
+    }
 
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static com.imdb.util.UtilClass.buildAccessToken;
 import static com.imdb.util.UtilClass.buildRefreshToken;
+import static java.lang.System.currentTimeMillis;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
@@ -45,12 +46,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         final User user = (User) authentication.getPrincipal();
         final Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
         final List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        final Date expiresAtAccess = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+        final Date expiresAtAccess = new Date(currentTimeMillis() + 24 * 60 * 60 * 1000);
 
         final String accessToken = buildAccessToken(user.getUsername(), expiresAtAccess,
                 request.getRequestURL().toString(), "roles", roles, algorithm);
 
-        final Date expiresAtRefresh = new Date(System.currentTimeMillis() + 20 * 24 * 60 * 60 * 1000);
+        final Date expiresAtRefresh = new Date(currentTimeMillis() + 20 * 24 * 60 * 60 * 1000);
 
         final String refreshToken = buildRefreshToken(user.getUsername(), expiresAtRefresh,
                 request.getRequestURL().toString(), algorithm);
@@ -58,6 +59,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         final Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
+        tokens.put("email", user.getUsername());
 
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);

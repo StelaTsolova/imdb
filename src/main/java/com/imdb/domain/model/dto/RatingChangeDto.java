@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -12,14 +13,13 @@ public class RatingChangeDto {
 
     @NotNull
     @Min(1)
-    private Integer countScores;
+    private Double score;
 
-    @NotNull
-    @Min(1)
-    private Double scores;
+    @NotBlank
+    private String userEmail;
 
     public String toString(){
-        return "[countScores=" + countScores + " scores=" + scores + "]";
+        return "[score=" + score + " userEmail=" + userEmail + "]";
     }
 
 }

@@ -5,6 +5,7 @@ import com.imdb.domain.model.entity.Rating;
 import com.imdb.domain.repository.RatingRepository;
 import com.imdb.domain.service.RatingService;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
+import com.imdb.domain.service.UserEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,52 +20,59 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TestRatingService {
-    public static final double RATING_SCORES = 5;
-    public static final int RATING_COUNT_SCORES = 1;
+    public static final double RATING_SCORE = 5;
 
     private RatingService ratingServiceTest;
     private Rating ratingTest;
 
     @Mock
     private RatingRepository ratingRepositoryMock;
+    @Mock
+    private UserEntityService userEntityServiceMock;
 
     @BeforeEach
     void init() {
-        ratingServiceTest = new RatingServiceImpl(ratingRepositoryMock);
+        ratingServiceTest = new RatingServiceImpl(ratingRepositoryMock, userEntityServiceMock);
 
         ratingTest = new Rating();
     }
 
     @Test
     public void updateRating() {
-        when(ratingRepositoryMock.findByMovie(any())).thenReturn(Optional.of(ratingTest));
+        when(ratingRepositoryMock.findByMovieAndUserEntity_Email(any(), any()))
+                .thenReturn(Optional.of(ratingTest));
 
-        final double averageScore = ratingServiceTest.updateRating(any(), RATING_SCORES);
+        assertEquals(ratingTest.getScore(), 0.0);
+        ratingServiceTest.updateRating(any(), RATING_SCORE, any());
 
-        assertEquals(averageScore, RATING_SCORES);
+        assertEquals(ratingTest.getScore(), RATING_SCORE);
     }
 
     @Test
     public void updateRatingShouldThrowWhenRatingWithMovieNotExist() {
-        when(ratingRepositoryMock.findByMovie(any())).thenReturn(Optional.empty());
+        when(ratingRepositoryMock.findByMovieAndUserEntity_Email(any(), any())).thenReturn(Optional.empty());
 
-        assertThrows(ObjectNotFoundException.class, () -> ratingServiceTest.updateRating(any(), RATING_SCORES));
+        assertThrows(ObjectNotFoundException.class, () -> ratingServiceTest.updateRating(any(), RATING_SCORE, any()));
     }
 
     @Test
     public void createRating() {
         final RatingChangeDto ratingChangeDto = new RatingChangeDto();
-        ratingChangeDto.setCountScores(RATING_COUNT_SCORES);
-        ratingChangeDto.setScores(RATING_SCORES);
+        ratingChangeDto.setScore(RATING_SCORE);
 
-        ratingTest.setCountScores(RATING_COUNT_SCORES);
-        ratingTest.setScores(RATING_SCORES);
+        ratingTest.setScore(RATING_SCORE);
         when(ratingRepositoryMock.save(any())).thenReturn(ratingTest);
 
         final Rating rating = ratingServiceTest.createRating(ratingChangeDto, null);
 
-        assertEquals(rating.getCountScores(), ratingTest.getCountScores());
-        assertEquals(rating.getScores(), rating.getScores());
+        assertEquals(rating.getScore(), rating.getScore());
+    }
+
+    @Test
+    public void createRatingShouldThrowWhenUserAlreadyRated() {
+        when(userEntityServiceMock.hasRated(any(), any())).thenReturn(true);
+
+        assertThrows(RuntimeException.class, () -> ratingServiceTest.createRating(new RatingChangeDto(), null));
     }
 
     @Test

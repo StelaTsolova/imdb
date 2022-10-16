@@ -2,6 +2,8 @@ package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.dto.RoleChangeDto;
 import com.imdb.domain.model.dto.UserEntityRegisterDto;
+import com.imdb.domain.model.entity.Movie;
+import com.imdb.domain.model.entity.Rating;
 import com.imdb.domain.model.entity.UserEntity;
 import com.imdb.domain.model.enums.Role;
 import com.imdb.domain.model.mapping.UserEntityMapper;
@@ -11,6 +13,8 @@ import com.imdb.domain.controller.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -47,5 +51,19 @@ public class UserEntityServiceImpl implements UserEntityService {
     public UserEntity getUserEntityByEmail(final String email) {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new ObjectNotFoundException("User with email " + email + " is not found."));
+    }
+
+    @Override
+    public void removeRating(UserEntity userEntity, Rating rating) {
+        userEntity.getRatings().remove(rating);
+
+        repository.save(userEntity);
+    }
+
+    @Override
+    public boolean hasRated(UserEntity userEntity, Movie movie) {
+        Optional<Rating> rating = userEntity.getRatings().stream().filter(r -> r.getMovie() == movie).findFirst();
+
+        return rating.isPresent();
     }
 }

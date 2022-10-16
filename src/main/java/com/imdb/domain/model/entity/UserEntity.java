@@ -41,4 +41,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "owner")
     private List<Movie> movies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "userEntity")
+    private List<Rating> ratings;
 }

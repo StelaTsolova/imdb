@@ -19,7 +19,7 @@ public class MovieCreateDto {
     private Integer year;
 
     @Valid
-    private RatingChangeDto rating;
+    private List<RatingChangeDto> rating;
 
     private List<ActorDto> actors;
 

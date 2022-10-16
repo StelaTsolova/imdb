@@ -17,13 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.imdb.domain.service.impl.TestActorService.ACTOR_FIRST_NAME;
-import static com.imdb.domain.service.impl.TestRatingService.RATING_COUNT_SCORES;
-import static com.imdb.domain.service.impl.TestRatingService.RATING_SCORES;
+import static com.imdb.domain.service.impl.TestRatingService.RATING_SCORE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -56,6 +56,8 @@ class TestMovieService {
     private MovieMapper movieMapperMock;
     @Mock
     private EntityManager entityManagerMock;
+    @Mock
+    private Principal principalMock;
 
     @BeforeEach
     public void init() {
@@ -64,6 +66,8 @@ class TestMovieService {
 
         movieTest = new Movie();
         movieTest.setName(MOVIE_NAME);
+        movieTest.setRatings(new ArrayList<>());
+        movieTest.getRatings().add(new Rating(3, null, null));
 
         movieDtoTest = new MovieDto();
         movieDtoTest.setName(movieTest.getName());
@@ -151,68 +155,53 @@ class TestMovieService {
 
     @Test
     public void updateMovieWhenMovieHaveNotRating() {
+        movieTest.setRatings(null);
         final Rating rating = new Rating();
-        rating.setCountScores(RATING_COUNT_SCORES);
-        rating.setScores(RATING_SCORES);
+        rating.setScore(RATING_SCORE);
 
-        movieUpdateDtoTest.setRating(new RatingChangeDto());
+        movieUpdateDtoTest.setRating(List.of(new RatingChangeDto()));
 
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         when(ratingServiceMock.createRating(any(), any())).thenReturn(rating);
 
         assertEquals(movieTest.getName(), MOVIE_NAME);
-        assertNull(movieTest.getRating());
+        assertNull(movieTest.getRatings());
 
         movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
-        assertEquals(movieTest.getRating().getCountScores(), RATING_COUNT_SCORES);
-        assertEquals(movieTest.getRating().getScores(), RATING_SCORES);
+        assertEquals(movieTest.getRatings().get(0).getScore(), RATING_SCORE);
     }
 
     @Test
     public void updateMovieWhenMovieHaveRating() {
         final Rating rating = new Rating();
-        rating.setCountScores(RATING_COUNT_SCORES);
-        rating.setScores(RATING_SCORES);
-        movieTest.setRating(rating);
-
-        final Rating newRating = new Rating();
-        newRating.setCountScores(RATING_COUNT_SCORES + 1);
-        newRating.setScores(RATING_SCORES + 3);
-        movieUpdateDtoTest.setRating(new RatingChangeDto());
+        rating.setScore(RATING_SCORE);
+        movieUpdateDtoTest.setRating(List.of(new RatingChangeDto()));
 
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
-        when(ratingServiceMock.createRating(any(), any())).thenReturn(newRating);
+        when(ratingServiceMock.createRating(any(), any())).thenReturn(rating);
 
         assertEquals(movieTest.getName(), MOVIE_NAME);
-        assertEquals(movieTest.getRating().getCountScores(), RATING_COUNT_SCORES);
-        assertEquals(movieTest.getRating().getScores(), RATING_SCORES);
+        assertEquals(movieTest.getRatings().get(0).getScore(), 3);
 
         movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
-        assertEquals(movieTest.getRating().getCountScores(), RATING_COUNT_SCORES + 1);
-        assertEquals(movieTest.getRating().getScores(), RATING_SCORES + 3);
+        assertEquals(movieTest.getRatings().get(0).getScore(), RATING_SCORE);
     }
 
     @Test
     public void updateMovieWhenMovieHaveRatingAndRatingChangeDtoIsNull() {
-        final Rating rating = new Rating();
-        rating.setCountScores(RATING_COUNT_SCORES);
-        rating.setScores(RATING_SCORES);
-        movieTest.setRating(rating);
-
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
 
         assertEquals(movieTest.getName(), MOVIE_NAME);
-        assertEquals(movieTest.getRating().getCountScores(), RATING_COUNT_SCORES);
-        assertEquals(movieTest.getRating().getScores(), RATING_SCORES);
+        assertEquals(movieTest.getRatings().get(0).getScore(), 3);
 
         movieServiceTest.updateMovie(ID, movieUpdateDtoTest);
 
         assertEquals(movieTest.getName(), MOVIE_NEW_NAME);
-        assertNull(movieTest.getRating());
+        assertTrue(movieTest.getRatings().isEmpty());
     }
 
     @Test
@@ -274,8 +263,7 @@ class TestMovieService {
     @Test
     public void updateRating() {
         when(movieRepositoryMock.findById(any())).thenReturn(Optional.of(movieTest));
-        when(ratingServiceMock.updateRating(movieTest, 0.0)).thenReturn(5.0);
 
-        assertEquals(movieServiceTest.updateRating(any(), new RatingDto()), 5.0);
+        assertEquals(movieServiceTest.updateRating(any(), new RatingDto(), principalMock), 3);
     }
 }

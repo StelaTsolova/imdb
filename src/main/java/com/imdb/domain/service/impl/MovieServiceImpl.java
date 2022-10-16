@@ -3,6 +3,7 @@ package com.imdb.domain.service.impl;
 import com.imdb.domain.model.dto.*;
 import com.imdb.domain.model.entity.Actor;
 import com.imdb.domain.model.entity.Movie;
+import com.imdb.domain.model.entity.Rating;
 import com.imdb.domain.model.mapping.MovieMapper;
 import com.imdb.domain.repository.MovieRepository;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
@@ -23,6 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,8 +59,6 @@ public class MovieServiceImpl implements MovieService {
         } else {
             movie.getActors().clear();
         }
-
-        movie.setRating(null);
 
         movieRepository.save(movie);
 
@@ -119,8 +119,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public double updateRating(final Long movieId, final RatingDto ratingDto) {
-        return ratingService.updateRating(getMovieById(movieId), ratingDto.getScore());
+    public double updateRating(final Long movieId, final RatingDto ratingDto, final Principal principal) {
+        Movie movie = getMovieById(movieId);
+
+        ratingService.updateRating(getMovieById(movieId), ratingDto.getScore(), principal.getName());
+
+        return movie.getAverageRating();
     }
 
     @Override
@@ -130,7 +134,7 @@ public class MovieServiceImpl implements MovieService {
         final Root<Movie> movieRoot = criteriaQuery.from(Movie.class);
 
         final List<String> columns = searchDto.getColumns();
-        final  List<Predicate> predicates = new ArrayList<>();
+        final List<Predicate> predicates = new ArrayList<>();
         for (String column : columns) {
             predicates.add(criteriaBuilder.or(criteriaBuilder.like
                     (movieRoot.get(String.valueOf(column))
@@ -155,36 +159,38 @@ public class MovieServiceImpl implements MovieService {
     private void addActorsToMovie(final Movie movie, final List<ActorDto> actors) {
         if (movie.getActors() == null || movie.getActors().isEmpty()) {
             movie.setActors(new ArrayList<>());
-            addActors(movie, actors);
         } else {
-            movie.getActors().forEach(actor ->actorService.removeMovieFromActor(movie, actor));
+            movie.getActors().forEach(actor -> actorService.removeMovieFromActor(movie, actor));
             movie.getActors().clear();
-
-            addActors(movie, actors);
         }
+
+        addActors(movie, actors);
     }
 
     private void addActors(final Movie movie, final List<ActorDto> actors) {
         if (actors != null) {
-            actors.forEach(actorDto -> {
-                final Actor actor = actorService.getActor(actorDto);
+            actors.stream().map(actorService::getActor).forEach(actor -> {
                 movie.getActors().add(actor);
-
                 actorService.addMovieToActor(movie, actor);
             });
         }
     }
 
-    private void addRatingToMovie(final Movie movie, final RatingChangeDto ratingChangeDto) {
-        if (ratingChangeDto != null) {
-            ratingService.removeRating(movie.getRating());
-            movie.setRating(ratingService.createRating(ratingChangeDto, movie));
+    private void addRatingToMovie(final Movie movie, final List<RatingChangeDto> ratings) {
+        if (movie.getRatings() == null || movie.getRatings().isEmpty()) {
+            movie.setRatings(new ArrayList<>());
         } else {
-            movie.setRating(null);
+            movie.getRatings().forEach(ratingService::removeRating);
+            movie.getRatings().clear();
+        }
+
+        if (ratings != null) {
+            ratings.stream().map(ratingChangeDto -> ratingService.createRating(ratingChangeDto, movie))
+                    .forEach(rating -> movie.getRatings().add(rating));
         }
     }
 
-    private void addRemainingFieldsToMovie(final Movie movie, final String name, final String trailerUrl, final Integer year){
+    private void addRemainingFieldsToMovie(final Movie movie, final String name, final String trailerUrl, final Integer year) {
         movie.setName(name);
         movie.setTrailerUrl(trailerUrl);
         movie.setYear(year);

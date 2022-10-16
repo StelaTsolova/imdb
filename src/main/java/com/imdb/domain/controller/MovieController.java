@@ -119,7 +119,8 @@ public class MovieController {
     @PostMapping(PATH_ID)
     public ResponseEntity<?> changeRating(@PathVariable(name = "id") final Long movieId,
                                           @RequestBody final RatingDto ratingDto,
-                                          BindingResult bindingResult) {
+                                          BindingResult bindingResult,
+                                          Principal principal) {
         log.info("Post request on path {}: movieId={}, score={}", PATH_ID, movieId, ratingDto.getScore());
         if (bindingResult.hasErrors()) {
             final Map<String, String> errorMessages = getErrorMessages(bindingResult.getAllErrors());
@@ -129,7 +130,7 @@ public class MovieController {
             return ResponseEntity.badRequest().body(errorMessages);
         }
 
-        final double averageRating = movieService.updateRating(movieId, ratingDto);
+        final double averageRating = movieService.updateRating(movieId, ratingDto, principal);
 
         log.info("Response from post request on path {}: status={}, rating={}", PATH_MY,
                 "200", averageRating);

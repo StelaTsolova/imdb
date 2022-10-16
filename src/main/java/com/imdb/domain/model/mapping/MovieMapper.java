@@ -16,10 +16,10 @@ public interface MovieMapper {
     @Mapping(source = "picture.url", target = "imgUrl")
     MovieDto mapMovieToMovieDto(Movie movie);
 
-    @AfterMapping
-    default void updateResult(@MappingTarget MovieDto movieDto, Movie movie) {
-        if (movie.getRating() != null) {
-            movieDto.setRating(movie.getRating().getAverageRating());
-        }
-    }
+//    @AfterMapping
+//    default void updateResult(@MappingTarget MovieDto movieDto, Movie movie) {
+//        if (movie.getRating() != null) {
+//            movieDto.setRating(movie.getRating().getAverageRating());
+//        }
+//    }
 }

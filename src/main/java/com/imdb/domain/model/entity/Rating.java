@@ -2,6 +2,7 @@ package com.imdb.domain.model.entity;
 
 import lombok.*;
 import org.decimal4j.util.DoubleRounder;
+import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
 
@@ -17,27 +18,31 @@ public class Rating {
     @Setter(AccessLevel.PRIVATE)
     private Long id;
 
-    @Column(name = "count_scores", nullable = false)
-    private int countScores;
+//    @Column(name = "count_scores", nullable = false)
+//    private int countScores;
 
     @Column(nullable = false)
-    private double scores;
+    private double score;
 
-    @OneToOne(mappedBy = "rating")
+//    @Transient
+//    private double averageRating;
+
+    @ManyToOne
     private Movie movie;
 
-    public Rating(int countScores, double scores, Movie movie) {
-       setCountScores(countScores);
-       setScores(scores);
-       setMovie(movie);
+    @ManyToOne
+    private UserEntity userEntity;
+
+    public Rating(double score, Movie movie, UserEntity userEntity) {
+        setScore(score);
+        setMovie(movie);
+        setUserEntity(userEntity);
     }
 
-    public double getAverageRating(){
-        return DoubleRounder.round(scores / countScores, 1);
-    }
-
-    public void increaseRating(double score){
-        scores += score;
-        countScores++;
-    }
+//    public void increaseRating(double score) {
+//        scores += score;
+//        countScores++;
+//
+//        averageRating = DoubleRounder.round(scores / countScores, 1);
+//    }
 }

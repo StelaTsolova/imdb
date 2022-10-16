@@ -6,9 +6,10 @@ import com.imdb.domain.model.entity.Rating;
 
 public interface RatingService {
 
-    double updateRating(Movie movieById, double scour);
+    void updateRating(Movie movieById, double scour, String userEmail);
 
     Rating createRating(RatingChangeDto ratingChangeDto, Movie movie);
 
     void removeRating(Rating rating);
+
 }
