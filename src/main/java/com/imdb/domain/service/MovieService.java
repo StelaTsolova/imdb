@@ -14,7 +14,7 @@ public interface MovieService {
 
     void updateMovie(Long id, MovieUpdateDto movieUpdateDto);
 
-    Long createMovie(MovieCreateDto movieCreateDto);
+    Long createMovie(MovieCreateDto movieCreateDto, Principal principal);
 
     void deleteMovie(Long id);
 

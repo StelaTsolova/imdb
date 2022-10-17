@@ -45,7 +45,8 @@ public class MovieController {
 
     @PostMapping()
     public ResponseEntity<?> createMovie(@RequestBody @Valid final MovieCreateDto movieCreateDto,
-                                         final BindingResult bindingResult, final UriComponentsBuilder builder) {
+                                         final BindingResult bindingResult, final Principal principal,
+                                         final UriComponentsBuilder builder) {
         log.info("Post request on path {}: name={}, year={}, rating={}, actors={}, genre={}, " +
                         "trailerUrl={}", PATH_MOVIES, movieCreateDto.getName(), movieCreateDto.getYear(),
                 movieCreateDto.getRating(), getActorsToString(movieCreateDto.getActors()),
@@ -58,7 +59,7 @@ public class MovieController {
             return ResponseEntity.badRequest().body(errorMessages);
         }
 
-        final Long movieId = movieService.createMovie(movieCreateDto);
+        final Long movieId = movieService.createMovie(movieCreateDto, principal);
         final URI location = builder.path(PATH_MOVIES + PATH_ID).buildAndExpand(movieId).toUri();
 
         log.info("Response from post request on path {}: status:{}, location={}", PATH_MOVIES,

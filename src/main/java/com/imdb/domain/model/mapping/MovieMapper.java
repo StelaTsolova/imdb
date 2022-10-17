@@ -11,7 +11,7 @@ public interface MovieMapper {
     @Mapping(ignore = true, target = "genre")
     Movie mapMovieCreateDtoToMovie(MovieCreateDto movieCreateDto);
 
-    @Mapping(ignore = true, target = "rating")
+//    @Mapping(ignore = true, target = "rating")
     @Mapping(source = "genre.name", target = "genre")
     @Mapping(source = "picture.url", target = "imgUrl")
     MovieDto mapMovieToMovieDto(Movie movie);

@@ -4,7 +4,6 @@ import com.imdb.domain.model.entity.Genre;
 import com.imdb.domain.repository.GenreRepository;
 import com.imdb.domain.service.GenreService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

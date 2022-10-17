@@ -40,7 +40,7 @@ public class ApplicationSecurityConfiguration {
                 .antMatchers(PATH_LOGIN, PATH_REGISTER).anonymous()
                 .antMatchers(HttpMethod.PUT, PATH_MOVIES + PATH_ID, PATH_CONTROL).hasRole(Role.ADMIN.name())
                 .antMatchers(HttpMethod.GET, PATH_MOVIES + PATH_MY, PATH_TOKEN_REFRESH).authenticated()
-                .antMatchers(HttpMethod.POST, PATH_MOVIES,
+                .antMatchers(HttpMethod.POST, PATH_MOVIES, PATH_MOVIES + PATH_ID,
                         PATH_MOVIES + PATH_ID + PATH_PICTURE).authenticated()
                 .antMatchers(HttpMethod.DELETE, PATH_MOVIES + PATH_ID).authenticated()
              .and()

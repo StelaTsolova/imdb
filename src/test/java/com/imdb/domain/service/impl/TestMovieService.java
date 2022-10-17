@@ -53,6 +53,8 @@ class TestMovieService {
     @Mock
     private RatingService ratingServiceMock;
     @Mock
+    private UserEntityService userEntityServiceMock;
+    @Mock
     private MovieMapper movieMapperMock;
     @Mock
     private EntityManager entityManagerMock;
@@ -62,7 +64,7 @@ class TestMovieService {
     @BeforeEach
     public void init() {
         movieServiceTest = new MovieServiceImpl(movieRepositoryMock, actorServiceMock, genreServiceMock, pictureServiceMock,
-                ratingServiceMock, movieMapperMock, entityManagerMock);
+                ratingServiceMock, userEntityServiceMock, movieMapperMock, entityManagerMock);
 
         movieTest = new Movie();
         movieTest.setName(MOVIE_NAME);
@@ -106,7 +108,7 @@ class TestMovieService {
         when(genreServiceMock.getGenre(TestGenreService.GENRE_NAME)).thenReturn(genre);
         when(movieRepositoryMock.save(movieTest)).thenReturn(movieTest);
 
-        movieServiceTest.createMovie(movieCreateDtoTest);
+        movieServiceTest.createMovie(movieCreateDtoTest, principalMock);
 
         assertEquals(movieTest.getGenre().getName(), TestGenreService.GENRE_NAME);
     }

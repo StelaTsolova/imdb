@@ -1,15 +1,12 @@
 package com.imdb.domain.service.impl;
 
 import com.imdb.domain.model.dto.*;
-import com.imdb.domain.model.entity.Actor;
 import com.imdb.domain.model.entity.Movie;
-import com.imdb.domain.model.entity.Rating;
 import com.imdb.domain.model.mapping.MovieMapper;
 import com.imdb.domain.repository.MovieRepository;
 import com.imdb.domain.controller.exception.ObjectNotFoundException;
 import com.imdb.domain.service.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +36,7 @@ public class MovieServiceImpl implements MovieService {
     private final GenreService genreService;
     private final PictureService pictureService;
     private final RatingService ratingService;
+    private final UserEntityService userEntityService;
     private final MovieMapper movieMapper;
     @PersistenceContext
     private final EntityManager entityManager;
@@ -52,8 +50,9 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Long createMovie(final MovieCreateDto movieCreateDto) {
+    public Long createMovie(final MovieCreateDto movieCreateDto, Principal principal) {
         final Movie movie = movieMapper.mapMovieCreateDtoToMovie(movieCreateDto);
+        movie.setOwner(userEntityService.getUserEntityByEmail(principal.getName()));
         if (movie.getActors() == null) {
             movie.setActors(new ArrayList<>());
         } else {

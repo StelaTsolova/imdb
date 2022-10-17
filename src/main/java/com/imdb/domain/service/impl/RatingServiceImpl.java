@@ -6,7 +6,6 @@ import com.imdb.domain.model.entity.Rating;
 import com.imdb.domain.model.entity.UserEntity;
 import com.imdb.domain.repository.RatingRepository;
 import com.imdb.domain.service.RatingService;
-import com.imdb.domain.controller.exception.ObjectNotFoundException;
 import com.imdb.domain.service.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +19,17 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public void updateRating(final Movie movie, final double score, final String userEmail) {
-        final Rating rating = ratingRepository.findByMovieAndUserEntity_Email(movie, userEmail)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Rating of movie %s and user %s is not found.", movie.getName(), userEmail)));
+        Rating rating = ratingRepository.findByMovieAndUserEntity_Email(movie, userEmail).orElse(null);
 
-        rating.setScore(score);
+        if (rating != null) {
+            rating.setScore(score);
+        } else {
+            RatingChangeDto ratingChangeDto = new RatingChangeDto();
+            ratingChangeDto.setScore(score);
+            ratingChangeDto.setUserEmail(userEmail);
+            rating = createRating(ratingChangeDto, movie);
+        }
+
         ratingRepository.save(rating);
     }
 
