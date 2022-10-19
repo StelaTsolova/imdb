@@ -1,11 +1,12 @@
 package com.imdb.domain.service.impl;
 
-import com.imdb.domain.model.dto.ActorDto;
-import com.imdb.domain.model.entity.Actor;
-import com.imdb.domain.model.entity.Movie;
-import com.imdb.domain.model.mapping.ActorMapper;
-import com.imdb.domain.repository.ActorRepository;
-import com.imdb.domain.service.ActorService;
+import com.imdb.domain.actor.model.dto.ActorDTO;
+import com.imdb.domain.actor.model.entity.Actor;
+import com.imdb.domain.actor.service.impl.ActorServiceImpl;
+import com.imdb.domain.movie.model.entity.Movie;
+import com.imdb.domain.actor.mapping.ActorMapper;
+import com.imdb.domain.actor.repository.ActorRepository;
+import com.imdb.domain.actor.service.ActorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +54,7 @@ class TestActorService {
                 .thenReturn(Optional.empty());
         when(actorRepositoryMock.save(any())).thenReturn(actorTest);
 
-        final Actor actor = actorServiceTest.getActor(new ActorDto());
+        final Actor actor = actorServiceTest.getActor(new ActorDTO());
 
         assertEquals(actor.getFirstName(), actorTest.getFirstName());
         assertEquals(actor.getLastName(), actorTest.getLastName());
@@ -64,7 +65,7 @@ class TestActorService {
         when(actorRepositoryMock.findByFirstNameAndLastName(any(), any()))
                 .thenReturn(Optional.of(actorTest));
 
-        final Actor actor = actorServiceTest.getActor(new ActorDto());
+        final Actor actor = actorServiceTest.getActor(new ActorDTO());
 
         assertEquals(actor.getFirstName(), actorTest.getFirstName());
         assertEquals(actor.getLastName(), actorTest.getLastName());

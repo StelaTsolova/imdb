@@ -1,8 +1,9 @@
 package com.imdb.domain.service.impl;
 
-import com.imdb.domain.model.entity.Genre;
-import com.imdb.domain.repository.GenreRepository;
-import com.imdb.domain.service.GenreService;
+import com.imdb.domain.genre.model.entity.Genre;
+import com.imdb.domain.genre.repository.GenreRepository;
+import com.imdb.domain.genre.service.GenreService;
+import com.imdb.domain.genre.service.impl.GenreServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

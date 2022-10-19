@@ -1,11 +1,12 @@
 package com.imdb.domain.service.impl;
 
-import com.imdb.domain.model.dto.RatingChangeDto;
-import com.imdb.domain.model.entity.Rating;
-import com.imdb.domain.repository.RatingRepository;
-import com.imdb.domain.service.RatingService;
-import com.imdb.domain.controller.exception.ObjectNotFoundException;
-import com.imdb.domain.service.UserEntityService;
+import com.imdb.domain.rating.model.dto.RatingChangeDTO;
+import com.imdb.domain.rating.model.entity.Rating;
+import com.imdb.domain.rating.repository.RatingRepository;
+import com.imdb.domain.rating.service.impl.RatingServiceImpl;
+import com.imdb.domain.rating.service.RatingService;
+import com.imdb.exception.ObjectNotFoundException;
+import com.imdb.domain.user.service.UserEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,7 +58,7 @@ class TestRatingService {
 
     @Test
     public void createRating() {
-        final RatingChangeDto ratingChangeDto = new RatingChangeDto();
+        final RatingChangeDTO ratingChangeDto = new RatingChangeDTO();
         ratingChangeDto.setScore(RATING_SCORE);
 
         ratingTest.setScore(RATING_SCORE);
@@ -72,7 +73,7 @@ class TestRatingService {
     public void createRatingShouldThrowWhenUserAlreadyRated() {
         when(userEntityServiceMock.hasRated(any(), any())).thenReturn(true);
 
-        assertThrows(RuntimeException.class, () -> ratingServiceTest.createRating(new RatingChangeDto(), null));
+        assertThrows(RuntimeException.class, () -> ratingServiceTest.createRating(new RatingChangeDTO(), null));
     }
 
     @Test

@@ -15,23 +15,26 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.imdb.util.UtilClass.buildAccessToken;
-import static com.imdb.util.UtilClass.buildRefreshToken;
-import static java.lang.System.currentTimeMillis;
+import static com.auth0.jwt.algorithms.Algorithm.HMAC256;
+import static com.imdb.common.utils.TokenUtils.buildAccessToken;
+import static com.imdb.common.utils.TokenUtils.buildRefreshToken;
+import static java.time.LocalDate.now;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
 
     @Override
-    public Authentication attemptAuthentication(final HttpServletRequest request, final HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(final HttpServletRequest request,
+                                                final HttpServletResponse response) throws AuthenticationException {
         final String email = request.getParameter("email");
         final String password = request.getParameter("password");
 
@@ -41,17 +44,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     @Override
-    protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-                                            final FilterChain chain, final Authentication authentication) throws IOException {
+    protected void successfulAuthentication(final HttpServletRequest request,
+                                            final HttpServletResponse response,
+                                            final FilterChain chain,
+                                            final Authentication authentication) throws IOException {
         final User user = (User) authentication.getPrincipal();
-        final Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
+        final Algorithm algorithm = HMAC256("pass".getBytes());
         final List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        final Date expiresAtAccess = new Date(currentTimeMillis() + 24 * 60 * 60 * 1000);
+        final LocalDate expiresAtAccess = now().plusDays(3);
 
         final String accessToken = buildAccessToken(user.getUsername(), expiresAtAccess,
                 request.getRequestURL().toString(), "roles", roles, algorithm);
 
-        final Date expiresAtRefresh = new Date(currentTimeMillis() + 20 * 24 * 60 * 60 * 1000);
+        final LocalDate expiresAtRefresh = now().plusMonths(3);
 
         final String refreshToken = buildRefreshToken(user.getUsername(), expiresAtRefresh,
                 request.getRequestURL().toString(), algorithm);
@@ -62,6 +67,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("email", user.getUsername());
 
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        objectMapper.writeValue(response.getOutputStream(), tokens);
     }
 }

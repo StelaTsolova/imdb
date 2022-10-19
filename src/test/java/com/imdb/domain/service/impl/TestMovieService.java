@@ -1,11 +1,26 @@
 package com.imdb.domain.service.impl;
 
-import com.imdb.domain.model.dto.*;
-import com.imdb.domain.model.entity.*;
-import com.imdb.domain.model.mapping.MovieMapper;
-import com.imdb.domain.repository.MovieRepository;
-import com.imdb.domain.controller.exception.ObjectNotFoundException;
-import com.imdb.domain.service.*;
+import com.imdb.domain.actor.model.dto.ActorDTO;
+import com.imdb.domain.actor.model.entity.Actor;
+import com.imdb.domain.actor.service.ActorService;
+import com.imdb.domain.genre.model.entity.Genre;
+import com.imdb.domain.genre.service.GenreService;
+import com.imdb.domain.movie.mapping.MovieMapper;
+import com.imdb.domain.movie.model.dto.MovieCreateDTO;
+import com.imdb.domain.movie.model.dto.MovieDTO;
+import com.imdb.domain.movie.model.dto.MovieUpdateDTO;
+import com.imdb.domain.movie.model.entity.Movie;
+import com.imdb.domain.movie.repository.MovieRepository;
+import com.imdb.domain.picture.model.entity.Picture;
+import com.imdb.domain.picture.service.PictureService;
+import com.imdb.domain.rating.model.dto.RatingChangeDTO;
+import com.imdb.domain.rating.model.dto.RatingDTO;
+import com.imdb.domain.rating.model.entity.Rating;
+import com.imdb.domain.rating.service.RatingService;
+import com.imdb.exception.ObjectNotFoundException;
+import com.imdb.domain.movie.service.MovieService;
+import com.imdb.domain.movie.service.impl.MovieServiceImpl;
+import com.imdb.domain.user.service.UserEntityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,9 +53,9 @@ class TestMovieService {
 
     private MovieService movieServiceTest;
     private Movie movieTest;
-    private MovieDto movieDtoTest;
-    private MovieCreateDto movieCreateDtoTest;
-    private MovieUpdateDto movieUpdateDtoTest;
+    private MovieDTO movieDtoTest;
+    private MovieCreateDTO movieCreateDtoTest;
+    private MovieUpdateDTO movieUpdateDtoTest;
 
     @Mock
     private MovieRepository movieRepositoryMock;
@@ -71,13 +86,13 @@ class TestMovieService {
         movieTest.setRatings(new ArrayList<>());
         movieTest.getRatings().add(new Rating(3, null, null));
 
-        movieDtoTest = new MovieDto();
+        movieDtoTest = new MovieDTO();
         movieDtoTest.setName(movieTest.getName());
 
-        movieCreateDtoTest = new MovieCreateDto();
+        movieCreateDtoTest = new MovieCreateDTO();
         movieCreateDtoTest.setName(MOVIE_NEW_NAME);
 
-        movieUpdateDtoTest = new MovieUpdateDto();
+        movieUpdateDtoTest = new MovieUpdateDTO();
         movieUpdateDtoTest.setName(MOVIE_NEW_NAME);
     }
 
@@ -90,7 +105,7 @@ class TestMovieService {
         when(movieMapperMock.mapMovieToMovieDto(movieTest))
                 .thenReturn(movieDtoTest);
 
-        final Page<MovieDto> pageMovieDto = movieServiceTest.getAllMovies(2, 2, "id");
+        final Page<MovieDTO> pageMovieDto = movieServiceTest.getAllMovies(2, 2, "id");
 
         assertEquals(pageMovieDto.getSize(), 1);
     }
@@ -118,7 +133,7 @@ class TestMovieService {
         final Actor actor = new Actor();
         actor.setFirstName(ACTOR_FIRST_NAME);
 
-        movieUpdateDtoTest.setActors(List.of(new ActorDto()));
+        movieUpdateDtoTest.setActors(List.of(new ActorDTO()));
 
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         when(actorServiceMock.getActor(any())).thenReturn(actor);
@@ -141,7 +156,7 @@ class TestMovieService {
 
         final Actor newActor = new Actor();
         newActor.setFirstName("NewName");
-        movieUpdateDtoTest.setActors(List.of(new ActorDto()));
+        movieUpdateDtoTest.setActors(List.of(new ActorDTO()));
 
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         when(actorServiceMock.getActor(any())).thenReturn(newActor);
@@ -161,7 +176,7 @@ class TestMovieService {
         final Rating rating = new Rating();
         rating.setScore(RATING_SCORE);
 
-        movieUpdateDtoTest.setRating(List.of(new RatingChangeDto()));
+        movieUpdateDtoTest.setRating(List.of(new RatingChangeDTO()));
 
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         when(ratingServiceMock.createRating(any(), any())).thenReturn(rating);
@@ -179,7 +194,7 @@ class TestMovieService {
     public void updateMovieWhenMovieHaveRating() {
         final Rating rating = new Rating();
         rating.setScore(RATING_SCORE);
-        movieUpdateDtoTest.setRating(List.of(new RatingChangeDto()));
+        movieUpdateDtoTest.setRating(List.of(new RatingChangeDTO()));
 
         when(movieRepositoryMock.findById(ID)).thenReturn(Optional.of(movieTest));
         when(ratingServiceMock.createRating(any(), any())).thenReturn(rating);
@@ -238,7 +253,7 @@ class TestMovieService {
         when(movieRepositoryMock.findByOwner_Email(EMAIL)).thenReturn(Optional.of(movies));
         when(movieMapperMock.mapMovieToMovieDto(movieTest)).thenReturn(movieDtoTest);
 
-        final List<MovieDto> movieDtos = movieServiceTest.getMoviesByUserEmail(EMAIL);
+        final List<MovieDTO> movieDtos = movieServiceTest.getMoviesByUserEmail(EMAIL);
 
         assertEquals(movies.get(0).getName(), movieDtos.get(0).getName());
     }
@@ -266,6 +281,6 @@ class TestMovieService {
     public void updateRating() {
         when(movieRepositoryMock.findById(any())).thenReturn(Optional.of(movieTest));
 
-        assertEquals(movieServiceTest.updateRating(any(), new RatingDto(), principalMock), 3);
+        assertEquals(movieServiceTest.updateRating(any(), new RatingDTO(), principalMock), 3);
     }
 }

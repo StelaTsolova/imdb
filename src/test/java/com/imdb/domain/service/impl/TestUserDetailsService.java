@@ -1,8 +1,9 @@
 package com.imdb.domain.service.impl;
 
-import com.imdb.domain.model.entity.UserEntity;
-import com.imdb.domain.model.enums.Role;
-import com.imdb.domain.repository.UserEntityRepository;
+import com.imdb.domain.user.model.entity.User;
+import com.imdb.domain.user.enums.Role;
+import com.imdb.domain.user.repository.UserEntityRepository;
+import com.imdb.domain.user.service.impl.UserDetailsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,7 @@ class TestUserDetailsService {
 
     @Test
     public void loadUserByUsername() {
-        final UserEntity userEntity = new UserEntity();
+        final User userEntity = new User();
         userEntity.setEmail(USER_DETAILS_EMAIL);
         userEntity.setPassword(USER_DETAILS_PASSWORD);
         userEntity.setRole(Role.USER);

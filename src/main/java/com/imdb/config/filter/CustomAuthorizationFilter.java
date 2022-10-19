@@ -1,9 +1,7 @@
 package com.imdb.config.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.imdb.common.utils.jwt.DecodedJWTInfo;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,7 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static com.imdb.util.UtilClass.*;
+import static com.auth0.jwt.algorithms.Algorithm.HMAC256;
+import static com.imdb.common.Constants.PATH_INDEX;
+import static com.imdb.common.Constants.PATH_SEARCH;
+import static com.imdb.common.utils.TokenUtils.sendErrors;
+import static com.imdb.common.utils.jwt.JWTDecoderUtils.decodeJWT;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -25,18 +27,17 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+    protected void doFilterInternal(final HttpServletRequest request,
+                                    final HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals(PATH_SEARCH) || request.getServletPath().equals(PATH_INDEX)) {
+        if (PATH_SEARCH.equals(request.getServletPath()) || PATH_INDEX.equals(request.getServletPath())) {
             filterChain.doFilter(request, response);
         } else {
             final String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
-                    final String token = authorizationHeader.substring("Bearer ".length());
-                    final Algorithm algorithm = Algorithm.HMAC256("pass".getBytes());
-                    final JWTVerifier verifier = JWT.require(algorithm).build();
-                    final DecodedJWT decodedJWT = verifier.verify(token);
+                    final DecodedJWTInfo info = decodeJWT(authorizationHeader);
+                    final DecodedJWT decodedJWT = info.getDecodedJWT();
 
                     final String email = decodedJWT.getSubject();
                     final String[] roles = decodedJWT.getClaim("roles").asArray(String.class);

@@ -1,8 +1,9 @@
 package com.imdb.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imdb.config.filter.CustomAuthenticationFilter;
 import com.imdb.config.filter.CustomAuthorizationFilter;
-import com.imdb.domain.model.enums.Role;
+import com.imdb.domain.user.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +16,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.imdb.util.UtilClass.*;
+import static com.imdb.common.Constants.*;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationSecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -45,7 +47,7 @@ public class ApplicationSecurityConfiguration {
                 .antMatchers(HttpMethod.DELETE, PATH_MOVIES + PATH_ID).authenticated()
              .and()
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilter(new CustomAuthenticationFilter(authenticationManager));
+                .addFilter(new CustomAuthenticationFilter(authenticationManager, objectMapper));
 
         return httpSecurity.build();
     }
